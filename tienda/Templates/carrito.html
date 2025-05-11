@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras</title>
+    <link rel="stylesheet" href="{% static 'css/carrito.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Tienda Online</h1>
+        
+        <div class="productos">
+            <h2>Productos Disponibles</h2>
+            <div class="producto" data-id="1" data-precio="19.99">
+                <h3>Camiseta</h3>
+                <p>$19.99</p>
+                <button class="agregar-carrito">Agregar al Carrito</button>
+            </div>
+            <div class="producto" data-id="2" data-precio="29.99">
+                <h3>Pantalón</h3>
+                <p>$29.99</p>
+                <button class="agregar-carrito">Agregar al Carrito</button>
+            </div>
+            <div class="producto" data-id="3" data-precio="9.99">
+                <h3>Gorra</h3>
+                <p>$9.99</p>
+                <button class="agregar-carrito">Agregar al Carrito</button>
+            </div>
+        </div>
+        
+        <div class="carrito">
+            <h2>Tu Carrito</h2>
+            <div class="carrito-items"></div>
+            <div class="carrito-total">
+                <strong>Total: $<span>0.00</span></strong>
+            </div>
+            <button class="vaciar-carrito">Vaciar Carrito</button>
+        </div>
+    </div>
+
+    <script src="js/carrito.js"></script>
+</body>
+</html>

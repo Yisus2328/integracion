@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Ferremas</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <h1>Bienvenido a Ferremas</h1>
+        <div class="dolar-info">
+            <span>Dólar hoy: </span>
+            <strong id="valor-dolar">$0.00</strong>
+            <small>(Actualizado: <span id="fecha-actualizacion">--/--/----</span>)</small>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/" class="active">Inicio</a></li>
+                <li><a href="/productos">Productos</a></li>
+                <li><a href="/contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="productos">
+            <h2>Productos Destacados</h2>
+            <div class="productos-grid">
+                <div class="producto">
+                    <img src="{% static 'img/TALADRO.jpg' %}" alt="Taladro Somix" loading="lazy">
+                    <h3>Taladro Somix</h3>
+                    <p class="precio-usd">USD 230.00</p>
+                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
+                    <button class="btn-comprar" data-index="0">Comprar</button>
+                </div>
+
+                <div class="producto">
+                    <img src="{% static 'img/alicate.jpg' %}" alt="Alicate" loading="lazy">
+                    <h3>Alicate</h3>
+                    <p class="precio-usd">USD 29.99</p>
+                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
+                    <button class="btn-comprar" data-index="1">Comprar</button>
+                </div>
+
+                <div class="producto">
+                    <img src="{% static 'img/destonillador.avif' %}" alt="destonillador" loading="lazy">
+                    <h3>Destonillador</h3>
+                    <p class="precio-usd">USD 25.00</p>
+                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
+                    <button class="btn-comprar" data-index="2">Comprar</button>
+                </div>
+
+                <div class="producto">
+                    <img src="{% static 'img/clavo.jpg' %}" alt="clavo" loading="lazy">
+                    <h3>Clavo</h3>
+                    <p class="precio-usd">USD 15.00</p>
+                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
+                    <button class="btn-comprar" data-index="3">Comprar</button>
+                </div>
+
+                <div class="producto">
+                    <img src="{% static 'img/casco.webp' %}" alt="casco" loading="lazy">
+                    <h3>Casco De Seguridad</h3>
+                    <p class="precio-usd">USD 35.00</p>
+                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
+                    <button class="btn-comprar" data-index="4">Comprar</button>
+                </div>
+
+                <div class="producto">
+                    <img src="{% static 'img/guantes.webp' %}" alt="guantes" loading="lazy">
+                    <h3>Guantes De Seguridad</h3>
+                    <p class="precio-usd">USD 5.00</p>
+                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
+                    <button class="btn-comprar" data-index="5">Comprar</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="carrito-container">
+        <button id="abrir-carrito" class="carrito-btn">
+            🛒 Carrito (<span id="contador-carrito">0</span>)
+        </button>
+
+        <div id="carrito-modal" class="modal">
+            <div class="modal-contenido">
+                <span class="cerrar-modal">&times;</span>
+                <h2>Tu Carrito de Compras</h2>
+                <div id="carrito-items"></div>
+                <div class="carrito-total">
+                    <p>Total USD: $<span id="total-usd">0.00</span></p>
+                    <p>Total CLP: $<span id="total-clp">0</span></p>
+                </div>
+                <button id="vaciar-carrito" class="btn-vaciar">Vaciar Carrito</button>
+                <button id="comprar" class="btn-comprar">Finalizar Compra</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Ferremas. Todos los derechos reservados.</p>
+    </footer>
+    <script src="{% static 'dolar/dolar.js' %}"></script>
+    <script src="{% static 'js/carrito.js' %}"></script>
+</body>
+</html>
