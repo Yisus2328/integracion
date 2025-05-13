@@ -3,3 +3,9 @@ Django==5.2.1
 mysqlclient==2.2.7
 sqlparse==0.5.3
 tzdata==2025.2
+
+
+
+#Consideraciones importanes - se debe activar el entorno virtual para ejecutar el servidor
+#venv\Scripts\activate
+#py manage.py runserver
