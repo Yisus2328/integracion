@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Listado y Eliminación de Productos</title>
+    <style>
+        /* ... tus estilos CSS ... */
+    </style>
+</head>
+<body>
+    <h1>Listado de Productos</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="productos-tbody">
+        </tbody>
+    </table>
+
+    <h2>Buscar Producto por ID</h2>
+    <form id="buscarProductoForm">
+        <div>
+            <label for="id_buscar">ID del Producto a Buscar:</label>
+            <input type="text" id="id_buscar" name="id_buscar" required>
+        </div>
+        <button type="button" onclick="buscarProductoPorId()">Buscar Producto</button>
+        <div id="resultado-busqueda"></div>
+    </form>
+
+    <h2>Eliminar Producto por ID</h2>
+    <form id="eliminarProductoForm">
+        {% csrf_token %}
+        <div>
+            <label for="id_eliminar">ID del Producto a Eliminar:</label>
+            <input type="text" id="id_eliminar" name="id_eliminar" required>
+        </div>
+        <button type="button" onclick="eliminarProducto()">Eliminar Producto</button>
+        <div id="mensaje-eliminar"></div>
+    </form>
+
+    <script src="{% static 'js/listar_productos.js' %}"></script>
+    <script src="{% static 'js/eliminar_productos.js' %}"></script>
+    <script src="{% static 'js/buscar_producto.js' %}"></script>
+</body>
+</html>

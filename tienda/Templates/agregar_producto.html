@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agregar Producto</title>
+</head>
+<body>
+    <h1>Agregar Nuevo Producto</h1>
+    <form id="agregarProductoForm">
+        {% csrf_token %}
+        <div>
+            <label for="id_producto">ID Producto:</label>
+            <input type="text" id="id_producto" name="id_producto" required>
+        </div>
+        <div>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+        </div>
+        <div>
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" name="descripcion"></textarea>
+        </div>
+        <div>
+            <label for="precio">Precio:</label>
+            <input type="number" step="0.01" id="precio" name="precio" required>
+        </div>
+        <div>
+            <label for="marca">Marca:</label>
+            <input type="text" id="marca" name="marca" required>
+        </div>
+        <div>
+            <label for="categoria">Categoría:</label>
+            <input type="text" id="categoria" name="categoria" required>
+        </div>
+        <button type="button" onclick="enviarProducto()">Agregar Producto</button>
+        <div id="mensaje"></div>
+    </form>
+
+    <script src="{% static 'js/agregar_producto.js' %}"></script>
+</body>
+</html>
