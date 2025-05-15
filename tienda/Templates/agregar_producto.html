@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Agregar Producto</title>
+    <title>Agregar / Actualizar Producto</title>
 </head>
 <body>
     <h1>Agregar Nuevo Producto</h1>
@@ -33,9 +33,41 @@
             <input type="text" id="categoria" name="categoria" required>
         </div>
         <button type="button" onclick="enviarProducto()">Agregar Producto</button>
-        <div id="mensaje"></div>
+        <div id="mensaje-agregar"></div>
     </form>
 
-    <script src="{% static 'js/agregar_producto.js' %}"></script>
+    <h2>Actualizar Producto Existente</h2>
+    <form id="actualizarProductoForm">
+        {% csrf_token %}
+        <div>
+            <label for="id_actualizar">ID del Producto a Actualizar:</label>
+            <input type="text" id="id_actualizar" name="id_actualizar" required>
+        </div>
+        <div>
+            <label for="nombre_actualizar">Nombre:</label>
+            <input type="text" id="nombre_actualizar" name="nombre_actualizar">
+        </div>
+        <div>
+            <label for="descripcion_actualizar">Descripción:</label>
+            <textarea id="descripcion_actualizar" name="descripcion_actualizar"></textarea>
+        </div>
+        <div>
+            <label for="precio_actualizar">Precio:</label>
+            <input type="number" step="0.01" id="precio_actualizar" name="precio_actualizar">
+        </div>
+        <div>
+            <label for="marca_actualizar">Marca:</label>
+            <input type="text" id="marca_actualizar" name="marca_actualizar">
+        </div>
+        <div>
+            <label for="categoria_actualizar">Categoría:</label>
+            <input type="text" id="categoria_actualizar" name="categoria_actualizar">
+        </div>
+        <button type="button" onclick="actualizarProducto()">Actualizar Producto</button>
+        <div id="mensaje-actualizar"></div>
+    </form>
+
+    <script src="{% static 'js/productos.js' %}"></script>
+
 </body>
 </html>
