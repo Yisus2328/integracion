@@ -1,0 +1,92 @@
+body {
+    font-family: sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4; /* Un fondo gris claro */
+}
+
+h1, h2 {
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center; /* Centrar los títulos */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff; /* Fondo blanco para la tabla */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #5cb85c; /* Verde Bootstrap */
+    color: white;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Filas pares con un fondo ligeramente diferente */
+}
+
+button {
+    background-color: #007bff; /* Azul Bootstrap */
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease; /* Transición suave al pasar el ratón */
+}
+
+button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+}
+
+#buscarProductoForm, #eliminarProductoForm, #agregarProductoForm, #actualizarProductoForm {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#buscarProductoForm div, #eliminarProductoForm div, #agregarProductoForm div, #actualizarProductoForm div {
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"], input[type="number"], textarea {
+    width: calc(100% - 12px);
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+textarea {
+    min-height: 80px;
+}
+
+#resultado-busqueda, #mensaje-eliminar, #mensaje-agregar, #mensajeAgregar {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #e0f7fa; /* Un color claro para los mensajes */
+    border: 1px solid #b2ebf2;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #00838f;
+}
