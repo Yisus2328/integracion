@@ -28,6 +28,7 @@ class Producto(models.Model):
     precio = models.IntegerField()
     marca = models.CharField(max_length=50)
     categoria = models.CharField(max_length=50)
+    stock = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'PRODUCTO'

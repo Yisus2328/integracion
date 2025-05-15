@@ -39,7 +39,7 @@ async function actualizarProducto() {
     const idActualizar = document.getElementById('id_actualizar').value;
 
     if (!idActualizar) {
-        document.getElementById('mensaje-actualizar').textContent = 'Por favor, ingresa el ID del producto a actualizar.';
+        document.getElementById('mensajeAgregar').textContent = 'Por favor, ingresa el ID del producto a actualizar.';
         return;
     }
 
@@ -66,7 +66,7 @@ async function actualizarProducto() {
         });
 
         const result = await response.json();
-        document.getElementById('mensaje-actualizar').textContent = result.mensaje || result.detail || response.statusText;
+        document.getElementById('mensajeAgregar').textContent = result.mensaje || result.detail || response.statusText;
 
         if (response.ok) {
             document.getElementById('actualizarProductoForm').reset(); // Limpiar el formulario en caso de éxito
@@ -76,7 +76,7 @@ async function actualizarProducto() {
 
     } catch (error) {
         console.error('Error de conexión:', error);
-        document.getElementById('mensaje-actualizar').textContent = 'Error de conexión con la API al intentar actualizar.';
+        document.getElementById('mensajeAgregar').textContent = 'Error de conexión con la API al intentar actualizar.';
     }
 }
 
