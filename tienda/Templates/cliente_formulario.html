@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agregar Cliente</title>
+    <link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+</head>
+<body>
+    <h1>Agregar Nuevo Cliente</h1>
+    <form id="agregarClienteForm">
+        {% csrf_token %}
+        <div>
+            <label for="rut">RUT:</label>
+            <input type="text" id="rut" name="rut" required>
+        </div>
+        <div>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="contraseña">Contraseña:</label>
+            <input type="password" id="contraseña" name="contraseña" required>
+        </div>
+        <div>
+            <label for="telefono">Teléfono (Opcional):</label>
+            <input type="text" id="telefono" name="telefono">
+        </div>
+        <div>
+            <label for="direccion">Dirección (Opcional):</label>
+            <input type="text" id="direccion" name="direccion">
+        </div>
+        <button type="button" onclick="agregarCliente()">Agregar Cliente</button>
+    </form>
+    <div id="mensaje"></div>
+
+    <script src="{% static 'js/clientes.js' %}"></script>
+</body>
+</html>

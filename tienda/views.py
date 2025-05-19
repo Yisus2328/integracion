@@ -15,3 +15,6 @@ def formulario_agregar_producto(request):
 
 def listar_eliminar_producto(request):
     return render(request, 'listar_productos.html')
+
+def agregar_cliente(request):
+    return render(request, 'cliente_formulario.html')

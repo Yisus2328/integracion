@@ -8,4 +8,5 @@ tzdata==2025.2
 
 #Consideraciones importanes - se debe activar el entorno virtual para ejecutar el servidor
 #venv\Scripts\activate
+#pip install -r requirements.txt
 #py manage.py runserver
