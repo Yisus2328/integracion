@@ -14,3 +14,8 @@ six==1.17.0
 sqlparse==0.5.3
 tzdata==2025.2
 urllib3==2.4.0
+
+#Consideraciones importanes - se debe activar el entorno virtual para ejecutar el servidor
+#venv\Scripts\activate
+#pip install -r requirements.txt o py -m pip install -r requirements.txt
+#py manage.py runserver

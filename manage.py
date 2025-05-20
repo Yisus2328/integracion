@@ -20,3 +20,9 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+#Consideraciones importanes - se debe activar el entorno virtual para ejecutar el servidor
+#venv\Scripts\activate
+#pip install -r requirements.txt o py -m pip install -r requirements.txt
+#py manage.py runserver
