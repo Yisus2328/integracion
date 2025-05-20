@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,24 +7,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio - Ferremas</title>
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+   
 </head>
 <body>
-    <header>
-        <h1>Bienvenido a Ferremas</h1>
-        <div class="dolar-info">
+    <nav class="navbar">
+            <h1>Ferremas</h1>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="/home" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+
+            <li class="dropdown">
+                <a href="#"><i class="fas fa-tools"></i> Productos <i class="fas fa-chevron-down"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/productos?categoria=herramientas">Herramientas</a></li>
+                    <li><a href="/productos?categoria=electricidad">Materiales Eléctricos</a></li>
+                    <li><a href="/productos?categoria=construccion">Construcción</a></li>
+                    <li><a href="/productos?categoria=plomeria">Plomería</a></li>
+                    <li><a href="/productos?categoria=seguridad">Seguridad</a></li>
+                </ul>
+            </li>
+
+            <li><a href="/ofertas"><i class="fas fa-percent"></i> Ofertas</a></li>
+            <li><a href="/contacto"><i class="fas fa-phone-alt"></i> Contacto</a></li>
+        </ul>
+
+        <div class="search-box">
+            <input type="text" placeholder="Buscar productos...">
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </div>
+
+          <div class="dolar-info">
             <span>Dólar hoy: </span>
             <strong id="valor-dolar">$0.00</strong>
             <small>(Actualizado: <span id="fecha-actualizacion">--/--/----</span>)</small>
         </div>
-        <nav>
-            <ul>
-                <li><a href="/" class="active">Inicio</a></li>
-                <li><a href="/productos">Productos</a></li>
-                <li><a href="/contacto">Contacto</a></li>
-            </ul>
-        </nav>
-    </header>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="user-btn" title="Cerrar sesión">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            {% else %}
+                <a href="{% url 'index' %}" class="user-btn" title="Iniciar sesión">
+                    <i class="fas fa-user"></i>
+                </a>
+            {% endif %}
+
+            <button class="cart-btn" id="abrir-carrito" title="Carrito">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="contador-carrito">0</span>
+            </button>
+        </div>
+    </nav>
 
     <main>
         <section id="productos">
@@ -33,77 +70,78 @@
                     <img src="{% static 'img/TALADRO.jpg' %}" alt="Taladro Somix" loading="lazy">
                     <h3>Taladro Somix</h3>
                     <p class="precio-usd">USD 230.00</p>
-                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
-                    <button class="btn-comprar" data-index="0">Comprar</button>
+                    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
+                    <button class="btn-comprar" data-index="0">Añadir al carrito</button>
                 </div>
 
                 <div class="producto">
                     <img src="{% static 'img/alicate.jpg' %}" alt="Alicate" loading="lazy">
                     <h3>Alicate</h3>
                     <p class="precio-usd">USD 29.99</p>
-                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
-                    <button class="btn-comprar" data-index="1">Comprar</button>
+                    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
+                    <button class="btn-comprar" data-index="1">Añadir al carrito</button>
                 </div>
 
                 <div class="producto">
-                    <img src="{% static 'img/destonillador.avif' %}" alt="destonillador" loading="lazy">
-                    <h3>Destonillador</h3>
+                    <img src="{% static 'img/destonillador.avif' %}" alt="Destornillador" loading="lazy">
+                    <h3>Destornillador</h3>
                     <p class="precio-usd">USD 25.00</p>
-                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
-                    <button class="btn-comprar" data-index="2">Comprar</button>
+                    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
+                    <button class="btn-comprar" data-index="2">Añadir al carrito</button>
                 </div>
 
                 <div class="producto">
-                    <img src="{% static 'img/clavo.jpg' %}" alt="clavo" loading="lazy">
+                    <img src="{% static 'img/clavo.jpg' %}" alt="Clavo" loading="lazy">
                     <h3>Clavo</h3>
                     <p class="precio-usd">USD 15.00</p>
-                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
-                    <button class="btn-comprar" data-index="3">Comprar</button>
+                    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
+                    <button class="btn-comprar" data-index="3">Añadir al carrito</button>
                 </div>
 
                 <div class="producto">
-                    <img src="{% static 'img/casco.webp' %}" alt="casco" loading="lazy">
+                    <img src="{% static 'img/casco.webp' %}" alt="Casco De Seguridad" loading="lazy">
                     <h3>Casco De Seguridad</h3>
                     <p class="precio-usd">USD 35.00</p>
-                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
-                    <button class="btn-comprar" data-index="4">Comprar</button>
+                    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
+                    <button class="btn-comprar" data-index="4">Añadir al carrito</button>
                 </div>
 
                 <div class="producto">
-                    <img src="{% static 'img/guantes.webp' %}" alt="guantes" loading="lazy">
+                    <img src="{% static 'img/guantes.webp' %}" alt="Guantes De Seguridad" loading="lazy">
                     <h3>Guantes De Seguridad</h3>
                     <p class="precio-usd">USD 5.00</p>
                     <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
-                    <button class="btn-comprar" data-index="5">Comprar</button>
+                    <button class="btn-comprar" data-index="5">Añadir al carrito</button>
                 </div>
             </div>
         </section>
     </main>
 
-    <div class="carrito-container">
-        <button id="abrir-carrito" class="carrito-btn">
-            🛒 Carrito (<span id="contador-carrito">0</span>)
-        </button>
-
-        <div id="carrito-modal" class="modal">
-            <div class="modal-contenido">
-                <span class="cerrar-modal">&times;</span>
-                <h2>Tu Carrito de Compras</h2>
-                <div id="carrito-items"></div>
-                <div class="carrito-total">
-                    <p>Total USD: $<span id="total-usd">0.00</span></p>
-                    <p>Total CLP: $<span id="total-clp">0</span></p>
-                </div>
-                <button id="vaciar-carrito" class="btn-vaciar">Vaciar Carrito</button>
-                <button id="comprar" class="btn-comprar">Finalizar Compra</button>
+    <div id="carrito-modal" class="modal">
+        <div class="modal-contenido">
+            <span class="cerrar-modal">&times;</span>
+            <h2><i class="fas fa-shopping-cart"></i> Tu Carrito de Compras</h2>
+            <div id="carrito-items"></div>
+            <div class="carrito-total">
+                <p>Total USD: $<span id="total-usd">0.00</span></p>
+                <p>Total CLP: $<span id="total-clp">0</span></p>
             </div>
+            <button id="vaciar-carrito" class="btn-vaciar"><i class="fas fa-trash-alt"></i> Vaciar Carrito</button>
+            <button id="comprar" class="btn-comprar-modal"><i class="fas fa-credit-card"></i> Finalizar Compra</button>
         </div>
     </div>
 
     <footer>
         <p>&copy; 2025 Ferremas. Todos los derechos reservados.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+        </div>
     </footer>
+
     <script src="{% static 'dolar/dolar.js' %}"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AcE8164LXXl0XG8QqcXd2GlPw16To7GktHYo5YgpMvJRWeeet-RBVnxj43pPT-pz2-L2hBrqjfGx33g8&currency=USD"></script>
     <script src="{% static 'js/carrito.js' %}"></script>
 </body>
 </html>

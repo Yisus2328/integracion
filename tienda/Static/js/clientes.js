@@ -28,7 +28,7 @@ async function agregarCliente() {
             
             setTimeout(() => {
                 window.location.href = '/index'; 
-            }, 3000); 
+            }, 6000); 
 
 
         } else {
@@ -72,7 +72,12 @@ async function iniciarSesion() {
             mensajeDiv.className = 'exito';
             mensajeDiv.textContent = result.message || 'Inicio de sesión exitoso.';
             console.log('Inicio de sesión exitoso:', result);
-            window.location.href = '/'; // Redirige tras el éxito
+            
+            // Espera 3 segundos (3000 milisegundos) y luego redirige
+            setTimeout(() => {
+                window.location.href = '/'; // Redirige tras el éxito
+            }, 3000); 
+
         } else {
             mensajeDiv.className = 'error';
             mensajeDiv.textContent = result.error || 'Error al iniciar sesión. Credenciales inválidas.';
