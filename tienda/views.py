@@ -19,6 +19,7 @@ def listar_eliminar_producto(request):
 def agregar_cliente(request):
     return render(request, 'cliente_formulario.html')
 
+<<<<<<< HEAD
 def login_t(request):
     return render(request, 'login_t.html')
 
@@ -30,3 +31,12 @@ def v_contador(request):
 
 def v_vendedor(request):
     return render(request, 'v_vendedor.html')
+=======
+def panel_ad(request):
+    return render(request, 'panel_ad.html')
+
+
+
+
+
+>>>>>>> d01a9878f302f7654144e00ca52eaca2b3494d41

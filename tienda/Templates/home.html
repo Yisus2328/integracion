@@ -13,12 +13,11 @@
 </head>
 <body>
     <nav class="navbar">
-            <h1>Ferremas</h1>
-        </div>
-
+        <h1>Ferremas</h1>
+        
         <ul class="nav-links">
             <li><a href="/home" class="active"><i class="fas fa-home"></i> Inicio</a></li>
-
+            
             <li class="dropdown">
                 <a href="#"><i class="fas fa-tools"></i> Productos <i class="fas fa-chevron-down"></i></a>
                 <ul class="dropdown-menu">
@@ -39,27 +38,16 @@
             <button type="submit"><i class="fas fa-search"></i></button>
         </div>
 
-          <div class="dolar-info">
+        <div class="dolar-info">
             <span>Dólar hoy: </span>
             <strong id="valor-dolar">$0.00</strong>
             <small>(Actualizado: <span id="fecha-actualizacion">--/--/----</span>)</small>
         </div>
 
-            {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="user-btn" title="Cerrar sesión">
-                    <i class="fas fa-sign-out-alt"></i>
-                </a>
-            {% else %}
-                <a href="{% url 'index' %}" class="user-btn" title="Iniciar sesión">
-                    <i class="fas fa-user"></i>
-                </a>
-            {% endif %}
-
-            <button class="cart-btn" id="abrir-carrito" title="Carrito">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count" id="contador-carrito">0</span>
-            </button>
-        </div>
+        <button class="cart-btn" id="abrir-carrito" title="Carrito">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="contador-carrito">0</span>
+        </button>
     </nav>
 
     <main>
