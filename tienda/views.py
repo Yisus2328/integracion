@@ -18,3 +18,15 @@ def listar_eliminar_producto(request):
 
 def agregar_cliente(request):
     return render(request, 'cliente_formulario.html')
+
+def login_t(request):
+    return render(request, 'login_t.html')
+
+def v_bodeguero(request):
+    return render(request, 'v_bodeguero.html')
+
+def v_contador(request):
+    return render(request, 'v_contador.html')
+
+def v_vendedor(request):
+    return render(request, 'v_vendedor.html')

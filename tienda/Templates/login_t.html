@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Trabajadores Ferremas</title>
+    <link rel="stylesheet" href="{% static 'css/indexx.css' %}">
+</head>
+<body>
+    <div class="form-container sign-in-container">
+        <form id="loginForm">
+            <h1>Inicio sesión - Trabajadores</h1>
+            <span>Por favor, ingresa con tus credenciales de trabajador.</span>
+            <p></p>
+            <input type="text" placeholder="ID de Trabajador (Ej: CO01)" name="id_trabajador" id="id_trabajador" required />
+            <input type="text" placeholder="RUT (Ej: 12.345.678-9)" name="rut_trabajador" id="rut_trabajador" required />
+            <p></p>
+            <button type="button" onclick="iniciarSesionTrabajador()">Entrar</button>
+        </form>
+        <div id="mensaje"></div>
+
+        <a href="{% url 'index' %}">Volver como cliente</a>
+    </div>
+
+    <script src="{% static 'js/trabajadores.js' %}"></script>
+</body>
+</html>
