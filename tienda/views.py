@@ -18,3 +18,11 @@ def listar_eliminar_producto(request):
 
 def agregar_cliente(request):
     return render(request, 'cliente_formulario.html')
+
+def panel_ad(request):
+    return render(request, 'panel_ad.html')
+
+
+
+
+

@@ -1,0 +1,142 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feremas - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/panel.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<!-- Barra Lateral -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h2>Feremas</h2>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="{% url 'home' %}"><i class="fa fa-home"></i> Panel Principal</a></li>
+        <li><a href="{% url 'index' %}"><i class="fa fa-box"></i> Productos</a></li>
+        <li><a href="{% url 'agregar_cliente' %}"><i class="fa fa-user-plus"></i> Agregar Cliente</a></li>
+        <li><a href="{% url 'formulario_agregar_producto' %}"><i class="fa fa-plus-square"></i> Agregar Producto</a></li>
+        
+        <li class="submenu">
+            <a href="#"><i class="fa fa-user-tie"></i> Empleados <i class="fa fa-chevron-down submenu-icon"></i></a>
+            <ul class="submenu-list">
+                <li><a href="#">Ver Empleados</a></li>
+                <li><a href="#">Crear Cuenta</a></li>
+            </ul>
+        </li>
+        
+        <li><a href="#"><i class="fa fa-clipboard-list"></i> Pedidos</a></li>
+        <li><a href="#"><i class="fa fa-cogs"></i> Configuración</a></li>
+    </ul>
+</div>
+
+<!-- Contenido Principal -->
+<div class="main-content">
+    <div class="dashboard">
+        <div class="header">
+            <div style="display: flex; align-items: center;">
+                <div class="menu-toggle"><i class="fa fa-bars"></i></div>
+                <h1>Panel de Control</h1>
+            </div>
+            <div class="breadcrumb">
+                <a href="#">Inicio</a> &gt; <a href="#">Dashboard</a> &gt; Principal
+            </div>
+        </div>
+        
+        <div class="cards-container">
+            <div class="card">
+                <h3>Ventas Diarias</h3>
+                <div class="value">$ 8,249.95</div>
+                <div class="percentage positive">+12%</div>
+            </div>
+            
+            <div class="card">
+                <h3>Ventas Mensuales</h3>
+                <div class="value">$ 142,942.32</div>
+                <div class="percentage positive">+5%</div>
+            </div>
+            
+            <div class="card">
+                <h3>Ventas Anuales</h3>
+                <div class="value">$ 1,238,638.32</div>
+                <div class="percentage negative">-3%</div>
+            </div>
+        </div>
+        
+        <div class="cards-container">
+            <div class="card">
+                <h3>Acciones Rápidas</h3>
+                <ul class="list">
+                    <li><i class="fa fa-plus-circle"></i> Registrar venta</li>
+                    <li><i class="fa fa-warehouse"></i> Control de inventario</li>
+                </ul>
+                
+                <div class="divider"></div>
+                
+                <h3>Administración</h3>
+                <ul class="list">
+                    <li><i class="fa fa-truck"></i> Proveedores</li>
+                    <li><i class="fa fa-chart-line"></i> Reportes</li>
+                </ul>
+            </div>
+            
+            <div class="card rating-card">
+                <h3>Inventario</h3>
+                <div class="percentage positive">+15% Rotación</div>
+                
+                <div class="rating-stats">
+                    <div class="stat-item">
+                        <div class="label">Stock bajo</div>
+                        <div class="number">28</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">Reabastecer</div>
+                        <div class="number">15</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card user-card">
+                <h3>Últimos Clientes</h3>
+                
+                <div class="user-info">
+                    <div class="user-avatar">CM</div>
+                    <div class="user-name">Carlos Mendoza</div>
+                </div>
+                
+                <div class="user-comment">
+                    Compra de materiales eléctricos y herramientas...
+                </div>
+                
+                <div class="user-meta">
+                    <div>15 MAY 09:45</div>
+                    <div class="tag">CONTRATISTA</div>
+                </div>
+                
+                <div class="rating-stats">
+                    <div class="stat-item">
+                        <div class="number">$2,850</div>
+                        <div class="percentage positive">+8%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">Artículos</div>
+                        <div class="number">14</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Menú toggle para móviles
+    document.querySelector('.menu-toggle').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('active');
+    });
+</script>
+</body>
+</html>
