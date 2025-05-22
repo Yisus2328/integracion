@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Administradores Ferremas</title>
+    <link rel="stylesheet" href="{% static 'css/indexx.css' %}">
+</head>
+<body>
+    <div class="form-container sign-in-container">
+        <form id="adminLoginForm">
+            <h1>Inicio sesión - Administradores</h1>
+            <span>Por favor, ingresa tus credenciales de administrador.</span>
+            <p></p>
+            <input type="text" placeholder="ID de Administrador" name="admin_id" id="admin_id" required />
+            <input type="email" placeholder="Email" name="admin_email" id="admin_email" required />
+            <input type="password" placeholder="Contraseña" name="admin_password" id="admin_password" required />
+            <p></p>
+            <button type="button" onclick="iniciarSesionAdmin()">Entrar</button>
+        </form>
+        <div id="adminMensaje"></div>
+
+        <a href="{% url 'index' %}">Volver a la página principal</a>
+    </div>
+
+    <script src="{% static 'js/admin.js' %}"></script>
+</body>
+</html>

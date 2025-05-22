@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Nuevo Empleado - Ferremas</title>
+    <link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+</head>
+<body>
+    <h1>Agregar Nuevo Empleado</h1>
+    <form id="agregarEmpleadoForm">
+        {% csrf_token %}
+        <div>
+            <label for="id_empleado">ID Empleado:</label>
+            <input type="text" id="id_empleado" name="id_empleado" placeholder="Ej: CO01, BO01, VE01" required>
+        </div>
+        <div>
+            <label for="rut_empleado">RUT:</label>
+            <input type="text" id="rut_empleado" name="rut_empleado" placeholder="Ej: 12.345.678-9" required>
+        </div>
+        <div>
+            <label for="nombre_empleado">Nombre:</label>
+            <input type="text" id="nombre_empleado" name="nombre_empleado" required>
+        </div>
+        <div>
+            <label for="email_empleado">Email:</label>
+            <input type="email" id="email_empleado" name="email_empleado" placeholder="ejemplo@ferremas.cl" required>
+        </div>
+        <div>
+            <label for="contraseña_empleado">Contraseña:</label>
+            <input type="password" id="contraseña_empleado" name="contraseña_empleado" required>
+        </div>
+        <div>
+            <label for="id_sucursal_empleado">ID Sucursal:</label>
+            <input type="text" id="id_sucursal_empleado" name="id_sucursal_empleado" placeholder="Ej: SUC001" required>
+        </div>
+        
+        <button type="button" onclick="agregarEmpleado()">Agregar Empleado</button>
+        <p></p>
+        <div id="mensajeEmpleado"></div>
+        <p></p>
+        <a href="/panel_ad/" class="admin-return-link">Volver al espacio de administrador</a>
+    </form>
+    <div id="mensajeEmpleado"></div>
+    
+    <script src="{% static 'js/empleados.js' %}"></script>
+</body>
+</html>

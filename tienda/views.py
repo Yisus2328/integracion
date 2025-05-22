@@ -35,4 +35,8 @@ def v_vendedor(request):
 def panel_ad(request):
     return render(request, 'panel_ad.html')
 
+def login_a(request):
+    return render(request, 'login_a.html')
 
+def agregar_e(request):
+    return render(request, 'agregar_empleados.html')
