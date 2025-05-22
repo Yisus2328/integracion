@@ -40,3 +40,9 @@ def login_a(request):
 
 def agregar_e(request):
     return render(request, 'agregar_empleados.html')
+
+def pago(request):
+    return render(request, 'pago.html')
+
+def checkout(request):
+    return render(request, 'checkout.html')

@@ -3,13 +3,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inicio - Ferremas</title>
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
-   
+    <link rel="stylesheet" href="{% static 'css/inicio.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
+    <!-- PayPal SDK con Client ID y configuración en USD -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AbotKg8ie6gHyWoIY96A9KOoUF0_VKaZvLVkN8xhQIDgYXfGlvNQ3t-rsBRr5wnhLmQJvyPBdcrOipSa&currency=USD"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -17,7 +18,6 @@
         
         <ul class="nav-links">
             <li><a href="/home" class="active"><i class="fas fa-home"></i> Inicio</a></li>
-            
             <li class="dropdown">
                 <a href="#"><i class="fas fa-tools"></i> Productos <i class="fas fa-chevron-down"></i></a>
                 <ul class="dropdown-menu">
@@ -28,21 +28,24 @@
                     <li><a href="/productos?categoria=seguridad">Seguridad</a></li>
                 </ul>
             </li>
-
             <li><a href="/ofertas"><i class="fas fa-percent"></i> Ofertas</a></li>
             <li><a href="/contacto"><i class="fas fa-phone-alt"></i> Contacto</a></li>
         </ul>
 
         <div class="search-box">
-            <input type="text" placeholder="Buscar productos...">
+            <input type="text" placeholder="Buscar productos..." />
             <button type="submit"><i class="fas fa-search"></i></button>
         </div>
 
         <div class="dolar-info">
-            <span>Dólar hoy: </span>
+            <span>Dólar: </span>
             <strong id="valor-dolar">$0.00</strong>
-            <small>(Actualizado: <span id="fecha-actualizacion">--/--/----</span>)</small>
+            <small>( <span id="fecha-actualizacion">--/--</span>)</small>
         </div>
+        <a href="/index" class="login-btn" title="Iniciar sesión">
+            <i class="fas fa-user"></i>
+            <span class="login-text">Iniciar Sesion</span>
+        </a>
 
         <button class="cart-btn" id="abrir-carrito" title="Carrito">
             <i class="fas fa-shopping-cart"></i>
@@ -55,7 +58,7 @@
             <h2>Productos Destacados</h2>
             <div class="productos-grid">
                 <div class="producto">
-                    <img src="{% static 'img/TALADRO.jpg' %}" alt="Taladro Somix" loading="lazy">
+                    <img src="{% static 'img/TALADRO.jpg' %}" alt="Taladro Somix" loading="lazy" />
                     <h3>Taladro Somix</h3>
                     <p class="precio-usd">USD 230.00</p>
                     <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
@@ -63,7 +66,7 @@
                 </div>
 
                 <div class="producto">
-                    <img src="{% static 'img/alicate.jpg' %}" alt="Alicate" loading="lazy">
+                    <img src="{% static 'img/alicate.jpg' %}" alt="Alicate" loading="lazy" />
                     <h3>Alicate</h3>
                     <p class="precio-usd">USD 29.99</p>
                     <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
@@ -71,7 +74,7 @@
                 </div>
 
                 <div class="producto">
-                    <img src="{% static 'img/destonillador.avif' %}" alt="Destornillador" loading="lazy">
+                    <img src="{% static 'img/destonillador.avif' %}" alt="Destornillador" loading="lazy" />
                     <h3>Destornillador</h3>
                     <p class="precio-usd">USD 25.00</p>
                     <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
@@ -79,7 +82,7 @@
                 </div>
 
                 <div class="producto">
-                    <img src="{% static 'img/clavo.jpg' %}" alt="Clavo" loading="lazy">
+                    <img src="{% static 'img/clavo.jpg' %}" alt="Clavo" loading="lazy" />
                     <h3>Clavo</h3>
                     <p class="precio-usd">USD 15.00</p>
                     <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
@@ -87,7 +90,7 @@
                 </div>
 
                 <div class="producto">
-                    <img src="{% static 'img/casco.webp' %}" alt="Casco De Seguridad" loading="lazy">
+                    <img src="{% static 'img/casco.webp' %}" alt="Casco De Seguridad" loading="lazy" />
                     <h3>Casco De Seguridad</h3>
                     <p class="precio-usd">USD 35.00</p>
                     <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
@@ -95,29 +98,75 @@
                 </div>
 
                 <div class="producto">
-                    <img src="{% static 'img/guantes.webp' %}" alt="Guantes De Seguridad" loading="lazy">
+                    <img src="{% static 'img/guantes.webp' %}" alt="Guantes De Seguridad" loading="lazy" />
                     <h3>Guantes De Seguridad</h3>
                     <p class="precio-usd">USD 5.00</p>
-                    <p class="precio-clp">$<span class="valor-convertido"></span> CLP</p>
+                    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
                     <button class="btn-comprar" data-index="5">Añadir al carrito</button>
                 </div>
             </div>
         </section>
     </main>
 
-    <div id="carrito-modal" class="modal">
-        <div class="modal-contenido">
-            <span class="cerrar-modal">&times;</span>
-            <h2><i class="fas fa-shopping-cart"></i> Tu Carrito de Compras</h2>
-            <div id="carrito-items"></div>
-            <div class="carrito-total">
-                <p>Total USD: $<span id="total-usd">0.00</span></p>
-                <p>Total CLP: $<span id="total-clp">0</span></p>
+    <!-- Modal Carrito -->
+<div id="carrito-modal" class="modal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.5); z-index: 1000;">
+    <div class="modal-contenido" style="background: #fff; margin: 5% auto; padding: 20px; border-radius: 8px; max-width: 500px; position: relative;">
+        <!-- Botón cerrar -->
+        <span class="cerrar-modal" style="cursor:pointer; font-size: 28px; position: absolute; top: 10px; right: 15px;">&times;</span>
+        
+        <!-- Título -->
+        <h2><i class="fas fa-shopping-cart"></i> Tu Carrito de Compras</h2>
+
+        <!-- Contenedor de items -->
+        <div id="carrito-items" class="carrito-vacio" style="min-height: 150px; border: 1px solid #ccc; padding: 10px; border-radius: 4px; overflow-y: auto;">
+            <p>Tu carrito está vacío</p>
+        </div>
+
+        <!-- Totales -->
+        <div class="carrito-total" style="margin-top: 15px; font-weight: bold; font-size: 18px;">
+            <p>Total USD: $<span id="total-usd">0.00</span></p>
+            <p>Total CLP: $<span id="total-clp">0</span></p>
+        </div>
+
+        <!-- Formulario de envío -->
+        <div class="form-envio" style="margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px;">
+            <h3>Selecciona método de envío</h3>
+            <form id="form-envio">
+                <label for="metodo-envio">Método de envío:</label><br>
+                <select id="metodo-envio" name="metodo-envio" required style="width: 100%; padding: 8px; margin-top: 6px; margin-bottom: 12px; border-radius: 4px; border: 1px solid #ccc;">
+                    <option value="">--Selecciona--</option>
+                    <option value="estandar">Estándar (5 USD)</option>
+                    <option value="express">Express (15 USD)</option>
+                    <option value="retiro">Retiro en tienda (Gratis)</option>
+                </select><br>
+
+                <label for="direccion-envio">Dirección de envío:</label><br>
+                <input type="text" id="direccion-envio" name="direccion-envio" placeholder="Ingresa tu dirección" required
+                    style="width: 100%; padding: 8px; margin-top: 6px; margin-bottom: 12px; border-radius: 4px; border: 1px solid #ccc;"><br>
+
+                <button type="submit" style="background-color: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                    Confirmar envío
+                </button>
+                <button type="button" id="cancelar-envio" style="background-color: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 10px;">
+                    Cancelar
+                </button>
+            </form>
+        </div>
+
+        <!-- Acciones del carrito -->
+        <div class="carrito-acciones" style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center;">
+            <button id="vaciar-carrito" class="btn-vaciar" style="background-color: #ffc107; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                <i class="fas fa-trash-alt"></i> Vaciar Carrito
+            </button>
+            <div id="comprar-btn-container">
+                <!-- Aquí puedes añadir botón de comprar -->
             </div>
-            <button id="vaciar-carrito" class="btn-vaciar"><i class="fas fa-trash-alt"></i> Vaciar Carrito</button>
-            <button id="comprar" class="btn-comprar-modal"><i class="fas fa-credit-card"></i> Finalizar Compra</button>
         </div>
     </div>
+</div>
+
+
+    
 
     <footer>
         <p>&copy; 2025 Ferremas. Todos los derechos reservados.</p>
@@ -129,8 +178,6 @@
     </footer>
 
     <script src="{% static 'dolar/dolar.js' %}"></script>
-    <script src="https://www.paypal.com/sdk/js?client-id=AcE8164LXXl0XG8QqcXd2GlPw16To7GktHYo5YgpMvJRWeeet-RBVnxj43pPT-pz2-L2hBrqjfGx33g8&currency=USD"></script>
     <script src="{% static 'js/carrito.js' %}"></script>
 </body>
 </html>
-<h1></h1>
