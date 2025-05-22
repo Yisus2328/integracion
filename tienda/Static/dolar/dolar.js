@@ -67,3 +67,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 });
+// Función para mostrar el valor del dólar en la consola

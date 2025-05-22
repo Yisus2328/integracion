@@ -7,7 +7,7 @@ import os
 def obtener_dolar():
     try:
         # Crear directorio si no existe
-        ruta_dolar = os.path.join("Ferrema", "tienda", "Static", "dolar")
+        ruta_dolar = os.path.join( "tienda", "Static", "dolar")
         os.makedirs(ruta_dolar, exist_ok=True)
         
         # Ruta completa del archivo json
@@ -59,21 +59,13 @@ def obtener_dolar():
         print(f"Error inesperado: {e}")
         return None
 
-if __name__ == "__main__":
-    valor = obtener_dolar()
-    if valor:
-        print(f"Dólar hoy: ${valor:.2f} CLP")
-    else:
-        print("No se pudo obtener el dato.")
-        try:
-            # Intentar leer el último valor disponible
-            json_path = os.path.join("Ferrema", "tienda", "Static", "dolar", "dolar.json")
-            with open(json_path, "r") as f:
-                data = json.load(f)
-                print(f"Último valor disponible (${data['valor']:.2f} CLP del {data['fecha']})")
-        except FileNotFoundError:
-            print("No se encontró el archivo `dolar.json`. No hay datos históricos disponibles.")
-        except json.JSONDecodeError:
-            print("Hubo un error al leer el archivo `dolar.json`. El archivo podría estar corrupto.")
-        except Exception as e:
-            print(f"Error inesperado al intentar leer el archivo histórico: {e}")
+# Obtener y mostrar el valor del dólar
+valor_dolar = obtener_dolar()
+if valor_dolar:
+    print("\n" + "="*50)
+    print(f"RESULTADO: El valor actual del dólar es ${valor_dolar:,.2f} CLP")
+    print("="*50 + "\n")
+else:
+    print("\n" + "="*50)
+    print("No se pudo obtener el valor del dólar en este momento")
+    print("="*50 + "\n")

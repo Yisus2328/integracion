@@ -65,6 +65,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 1rem;
             -webkit-transition: all 0.3s ease;
             -moz-transition: all 0.3s ease;
             -ms-transition: all 0.3s ease;
