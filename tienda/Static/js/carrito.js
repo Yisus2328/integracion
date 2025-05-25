@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-    // Tomar valor dólar del DOM
     let valorDolar = parseFloat(valorDolarElement.textContent.replace('$', '')) || 0;
     let costoEnvio = 0;
 
@@ -110,11 +109,17 @@ document.addEventListener('DOMContentLoaded', function () {
                             <h4>${item.nombre}</h4>
                             <p>USD ${item.precioUsd.toFixed(2)} x ${item.cantidad}</p>
                             <p>Subtotal: USD ${(item.precioUsd * item.cantidad).toFixed(2)}</p>
-                            <button onclick="eliminarDelCarrito(${index})">Eliminar</button>
+                            <button class="btn-eliminar" data-index="${index}">Eliminar</button>
                         </div>
                     </div>
                 `;
                 carritoItemsContainer.innerHTML += itemHTML;
+            });
+            // Asignar eventos a los botones eliminar
+            document.querySelectorAll('.btn-eliminar').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    eliminarDelCarrito(parseInt(this.getAttribute('data-index')));
+                });
             });
         }
 
@@ -129,12 +134,12 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('carrito', JSON.stringify(carrito));
     }
 
-    window.eliminarDelCarrito = function (index) {
+    function eliminarDelCarrito(index) {
         carrito.splice(index, 1);
         actualizarCarrito();
         actualizarTotalesConEnvio();
         renderizarBotonPaypal();
-    };
+    }
 
     function vaciarCarrito() {
         carrito = [];
@@ -144,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function actualizarPreciosCLP() {
-        document.querySelectorAll('.producto').forEach((productoElement, index) => {
+        document.querySelectorAll('.producto').forEach((productoElement) => {
             const precioUsd = parseFloat(productoElement.querySelector('.precio-usd').textContent.replace('USD ', ''));
             const precioClp = precioUsd * valorDolar;
             productoElement.querySelector('.valor-convertido').textContent = Math.round(precioClp).toLocaleString();
@@ -163,31 +168,139 @@ document.addEventListener('DOMContentLoaded', function () {
         costoEnvioClpElement.textContent = Math.round(costoEnvio * valorDolar).toLocaleString();
     }
 
-    function renderizarBotonPaypal() {
-        comprarBtnContainer.innerHTML = ''; // limpiar contenedor antes
+   function renderizarBotonPaypal() {
+    comprarBtnContainer.innerHTML = ''; // limpiar contenedor antes
 
-        const totalUsd = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0) + costoEnvio;
+    const totalUsd = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0) + costoEnvio;
 
+    if (totalUsd > 0) {
         paypal.Buttons({
-            createOrder: function (data, actions) {
+            createOrder: function(actions) {
                 return actions.order.create({
                     purchase_units: [{
                         amount: {
-                            currency_code: "USD", // importante poner moneda
-                            value: totalUsd.toFixed(2)
+                            value: totalUsd.toFixed(2),
+                            currency_code: "USD"
                         }
                     }]
                 });
             },
-            onApprove: function (data, actions) {
-                return actions.order.capture().then(function (details) {
-                    alert('Gracias por tu compra, ' + details.payer.name.given_name + '!');
-                    vaciarCarrito();
-                    cerrarCarrito();
+            onApprove: function(actions) {
+                return actions.order.capture().then(function(details) {
+                    mostrarModalConfirmacion(details, totalUsd);
                 });
+            },
+            onError: function(err) {
+                console.error('Error en el pago PayPal:', err);
+                mostrarError('Ocurrió un error al procesar tu pago. Por favor intenta nuevamente.');
             }
         }).render('#comprar-btn-container');
     }
+}
+
+// Función para mostrar el modal de confirmación
+function mostrarModalConfirmacion(details, totalUsd) {
+    const cantidadArticulos = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+    const metodoEnvio = document.getElementById('metodo-envio').options[document.getElementById('metodo-envio').selectedIndex].text;
+    const subtotal = totalUsd - costoEnvio;
+    
+    const modalHTML = `
+        <div class="order-success-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.8);display:flex;justify-content:center;align-items:center;z-index:2000;font-family:Arial,sans-serif;">
+            <div class="order-success-content" style="background:white;padding:30px;border-radius:10px;max-width:600px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 5px 15px rgba(0,0,0,0.3);">
+                <div class="order-success-header" style="text-align:center;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid #eee;">
+                    <div style="font-size:50px;color:#28a745;margin-bottom:15px;">✓</div>
+                    <h2 style="color:#28a745;margin-bottom:10px;">¡Gracias por tu compra!</h2>
+                    <p>Tu pedido #${details.id.substr(0, 8)} ha sido procesado con éxito</p>
+                </div>
+                
+                <div style="margin-bottom:20px;">
+                    <h3 style="color:#333;margin-bottom:15px;font-size:18px;border-bottom:1px solid #eee;padding-bottom:5px;">Información del pago</h3>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                        <span style="font-weight:bold;color:#555;">ID de transacción:</span>
+                        <span style="color:#333;">${details.id}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                        <span style="font-weight:bold;color:#555;">Estado:</span>
+                        <span style="color:#333;">${details.status}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                        <span style="font-weight:bold;color:#555;">Fecha:</span>
+                        <span style="color:#333;">${new Date(details.create_time).toLocaleString()}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                        <span style="font-weight:bold;color:#555;">Correo PayPal:</span>
+                        <span style="color:#333;">${details.payer.email_address}</span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom:20px;">
+                    <h3 style="color:#333;margin-bottom:15px;font-size:18px;border-bottom:1px solid #eee;padding-bottom:5px;">Información de envío</h3>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                        <span style="font-weight:bold;color:#555;">Método:</span>
+                        <span style="color:#333;">${metodoEnvio}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                        <span style="font-weight:bold;color:#555;">Costo de envío:</span>
+                        <span style="color:#333;">$${costoEnvio.toFixed(2)} USD</span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom:20px;">
+                    <h3 style="color:#333;margin-bottom:15px;font-size:18px;border-bottom:1px solid #eee;padding-bottom:5px;">Productos (${cantidadArticulos})</h3>
+                    <div style="margin-top:15px;">
+                        ${carrito.map(item => `
+                            <div style="display:flex;align-items:center;margin-bottom:15px;padding-bottom:15px;border-bottom:1px dashed #eee;">
+                                <img src="${item.imagen}" alt="${item.nombre}" style="width:60px;height:60px;object-fit:cover;border-radius:5px;margin-right:15px;">
+                                <div style="flex-grow:1;">
+                                    <div style="font-weight:bold;margin-bottom:5px;">${item.nombre}</div>
+                                    <div style="color:#666;">Cantidad: ${item.cantidad}</div>
+                                </div>
+                                <div style="color:#e67e22;">$${(item.precioUsd * item.cantidad).toFixed(2)} USD</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div style="margin-top:20px;padding-top:15px;border-top:2px solid #eee;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                        <span style="font-weight:bold;color:#555;">Subtotal:</span>
+                        <span style="color:#333;">$${subtotal.toFixed(2)} USD</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                        <span style="font-weight:bold;color:#555;">Envío:</span>
+                        <span style="color:#333;">$${costoEnvio.toFixed(2)} USD</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-top:10px;">
+                        <span style="font-weight:bold;color:#2c3e50;font-size:18px;">Total:</span>
+                        <span style="color:#333;font-size:22px;">$${totalUsd.toFixed(2)} USD</span>
+                    </div>
+                </div>
+                
+                <button onclick="document.querySelector('.order-success-modal').remove();" style="display:block;width:100%;padding:12px;background-color:#007bff;color:white;border:none;border-radius:5px;font-size:16px;cursor:pointer;margin-top:20px;transition:background-color 0.3s;">Cerrar</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    vaciarCarrito();
+    cerrarCarrito();
+    //guardarHistorialPedido(details, totalUsd); // Descomenta o implementa esta función si es necesaria
+}
+
+// Función para mostrar errores
+function mostrarError(mensaje) {
+    const errorHTML = `
+        <div class="error-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.8);display:flex;justify-content:center;align-items:center;z-index:2000;">
+            <div style="background:white;padding:30px;border-radius:10px;max-width:500px;width:90%;text-align:center;">
+                <h3 style="color:#dc3545;margin-bottom:20px;">Error en el pago</h3>
+                <p style="margin-bottom:20px;">${mensaje}</p>
+                <button onclick="document.querySelector('.error-modal').remove()" style="padding:10px 20px;background:#dc3545;color:white;border:none;border-radius:5px;cursor:pointer;">Cerrar</button>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', errorHTML);
+}
+
 
     // Modal de envío
     function abrirModalEnvio() {

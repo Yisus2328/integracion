@@ -7,7 +7,7 @@ import os
 def obtener_dolar():
     try:
         # Crear directorio si no existe
-        ruta_dolar = os.path.join( "tienda", "Static", "dolar")
+        ruta_dolar = os.path.join( "integracion","tienda", "Static", "dolar")
         os.makedirs(ruta_dolar, exist_ok=True)
         
         # Ruta completa del archivo json
