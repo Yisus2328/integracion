@@ -42,10 +42,32 @@
             <strong id="valor-dolar">$0.00</strong>
             <small>( <span id="fecha-actualizacion">--/--</span>)</small>
         </div>
-        <a href="/index" class="login-btn" title="Iniciar sesión">
-            <i class="fas fa-user"></i>
-            <span class="login-text">Iniciar Sesion</span>
-        </a>
+
+
+        {% if user.is_authenticated %}
+            <div class="user-info">
+                {# Enlace al perfil del cliente (opcional, si tienes una vista de perfil detallada) #}
+                    <i class="fas fa-user-circle"></i>
+                    <span class="user-name">Hola, {{ user.cliente_profile.nombre|default:user.username }}</span>
+                </a>
+
+                {# CAMBIO AQUÍ: Usar un formulario POST para cerrar sesión #}
+                <form action="{% url 'logout_cliente' %}" method="post" style="display:inline;">
+                    {% csrf_token %} {# ¡MUY IMPORTANTE para seguridad en Django! #}
+                    <button type="submit" class="logout-btn" title="Cerrar sesión">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </form>
+            </div>
+        {% else %}
+            <a href="/index" class="login-btn" title="Iniciar sesión">
+                <i class="fas fa-user"></i>
+                <span class="login-text">Iniciar Sesion</span>
+            </a>
+        {% endif %}
+
+
+
 
         <button class="cart-btn" id="abrir-carrito" title="Carrito">
             <i class="fas fa-shopping-cart"></i>
@@ -60,7 +82,11 @@
 <div class="productos-grid">
     {% for producto in productos %}
     <div class="producto" data-id="{{ producto.id_producto }}">
-        <img src="{% static 'img/TALADRO.jpg' %}" alt="{{ producto.nombre }}" loading="lazy" />
+        {% if producto.imagen_url %}
+            <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" loading="lazy" />
+        {% else %}
+            <img src="{% static 'img/default_product.jpg' %}" alt="{{ producto.nombre }}" loading="lazy" />
+        {% endif %}
         <h3>{{ producto.nombre }}</h3>
         <p class="precio-usd">USD {{ producto.precio }}</p>
         <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>

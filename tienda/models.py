@@ -1,5 +1,6 @@
 # Create your models here.
 from django.db import models
+from django.contrib.auth.models import User
 
 class Sucursal(models.Model):
     id_sucursal = models.CharField(max_length=10, primary_key=True)
@@ -13,13 +14,16 @@ class Sucursal(models.Model):
 class Cliente(models.Model):
     rut = models.CharField(max_length=12, primary_key=True)
     nombre = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100)
+    email = models.EmailField(max_length=100, unique=True)
     contraseña = models.CharField(max_length=100)
     telefono = models.CharField(max_length=15, null=True, blank=True)
     direccion = models.CharField(max_length=40, null=True, blank=True)
 
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='cliente_profile')
+
     class Meta:
         db_table = 'CLIENTE'
+
 
 class Producto(models.Model):
     id_producto = models.CharField(max_length=10, primary_key=True)
@@ -29,6 +33,7 @@ class Producto(models.Model):
     marca = models.CharField(max_length=50)
     categoria = models.CharField(max_length=50)
     stock = models.IntegerField(default=0)
+    imagen_url = models.CharField(max_length=255, null=True, blank=True) 
 
     class Meta:
         db_table = 'PRODUCTO'
@@ -80,7 +85,7 @@ from django.db import models
 
 class Pedido(models.Model):
     id_pedido = models.CharField(max_length=50, primary_key=True)
-    cliente = models.ForeignKey('Cliente', on_delete=models.PROTECT, db_column='id_cliente')
+    cliente = models.ForeignKey('Cliente', on_delete=models.PROTECT, db_column='rut')
     vendedor = models.ForeignKey('Vendedor', on_delete=models.PROTECT, db_column='id_vendedor')
     bodeguero = models.ForeignKey('Bodeguero', on_delete=models.PROTECT, db_column='id_bodeguero')
     fecha = models.DateTimeField(auto_now_add=True)

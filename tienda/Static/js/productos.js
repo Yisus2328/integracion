@@ -1,35 +1,67 @@
-//Funcion para agregar productos
 async function enviarProducto() {
-    const formData = new FormData(document.getElementById('agregarProductoForm'));
-    const productoData = {};
-    formData.forEach((value, key) => {
-        productoData[key] = value;
-    });
+    const form = document.getElementById('agregarProductoForm');
+    const formData = new FormData(form); 
+
+    const mensajeDiv = document.getElementById('mensaje-agregar');
+    mensajeDiv.textContent = ''; 
+    mensajeDiv.style.color = ''; 
+
+  
+    const requiredFields = ['id_producto', 'nombre', 'precio', 'marca', 'categoria', 'stock'];
+    for (const field of requiredFields) {
+        if (!formData.get(field)) {
+            mensajeDiv.textContent = `Por favor, completa el campo "${field}".`;
+            mensajeDiv.style.color = 'red';
+            return;
+        }
+    }
+
+    
+    const imagenInput = document.getElementById('imagen_producto');
+    if (imagenInput.files.length > 0) {
+        const file = imagenInput.files[0];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            mensajeDiv.textContent = 'Tipo de archivo de imagen no permitido. Solo JPG, PNG, GIF, WEBP.';
+            mensajeDiv.style.color = 'red';
+            imagenInput.value = ''; 
+            return;
+        }
+
+    }
 
     try {
-        const apiUrl = 'http://127.0.0.1:8001/producto/agregar_prod'; // <---- URL de tu API FastAPI
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        const response = await fetch(apiUrl, {
+        
+        const djangoApiUrl = '/producto/procesar_agregar/'; 
+
+        const response = await fetch(djangoApiUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            }, // <-- Coma eliminada
-            body: JSON.stringify(productoData),
+                
+                'X-CSRFToken': csrfToken, 
+            },
+            body: formData, 
         });
 
-        const result = await response.json();
-        document.getElementById('mensaje-agregar').textContent = result.mensaje || (response.statusText);
+        const result = await response.json(); 
 
         if (response.ok) {
-            document.getElementById('agregarProductoForm').reset(); // Limpiar el formulario en caso de éxito
+            mensajeDiv.textContent = result.message || 'Producto agregado exitosamente.';
+            mensajeDiv.style.color = 'green';
+            form.reset(); 
         } else {
-            console.error('Error al agregar producto:', result.detail || response.statusText);
+            mensajeDiv.textContent = result.message || `Error al agregar producto: ${response.statusText}`;
+            mensajeDiv.style.color = 'red';
+            console.error('Error al agregar producto (respuesta de Django):', result.detail || response.statusText);
         }
 
     } catch (error) {
-        console.error('Error de conexión:', error);
-        document.getElementById('mensaje').textContent = 'Error de conexión con la API';
+        console.error('Error de conexión o en la solicitud Fetch:', error);
+        mensajeDiv.textContent = 'Error de conexión con el servidor de Django.';
+        mensajeDiv.style.color = 'red';
     }
 }
 

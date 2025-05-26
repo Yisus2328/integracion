@@ -6,8 +6,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/productos.css' %}">
 </head>
 <body>
-    <h1>Agregar Nuevo Producto</h1>
-<form id="agregarProductoForm">
+<h1>Agregar Nuevo Producto</h1>
+<form id="agregarProductoForm" enctype="multipart/form-data"> {# ¡IMPORTANTE: AÑADIR ESTO! #}
     {% csrf_token %}
     <div>
         <label for="id_producto">ID Producto:</label>
@@ -36,6 +36,10 @@
     <div>
         <label for="stock">Stock:</label>
         <input type="number" id="stock" name="stock" required>
+    </div>
+    <div>
+        <label for="imagen_producto">Imagen del Producto:</label>
+        <input type="file" id="imagen_producto" name="imagen_producto" accept="image/*">
     </div>
     <button type="button" onclick="enviarProducto()">Agregar Producto</button>
     <div id="mensaje-agregar"></div>

@@ -10,14 +10,14 @@
 <body>
     <div class="form-container sign-in-container">
         <form id="loginForm">
-            <h1>Iniciar sesión en Ferremas</h1>
-            <span>o ingresa con tu cuenta</span>
-            <input type="email" placeholder="Correo electrónico" name="email" required />
-            <input type="password" placeholder="Contraseña" name="contraseña" required />
+            {% csrf_token %} 
+            <h1>Iniciar Sesión - Clientes</h1>
+            <input type="email" placeholder="Email" name="email" id="email" required />
+            <input type="password" placeholder="Contraseña" name="password" id="password" required />
             <a href="#">¿Olvidaste tu contraseña?</a>
             <a href="/agregar_cliente/">¿No tienes cuenta?</a>
             <p></p>
-            <button type="button" onclick="iniciarSesion()">Entrar</button>
+            <button type="button" onclick="iniciarSesionCliente()">Entrar</button>
         </form>
         <div id="mensaje"></div>
 

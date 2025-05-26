@@ -46,48 +46,64 @@ async function agregarCliente() {
 }
 
 
-async function iniciarSesion() {
-    const form = document.getElementById('loginForm');
-    const formData = new FormData(form);
-    const loginData = {};
-    formData.forEach((value, key) => {
-        loginData[key] = value;
-    });
+async function iniciarSesionCliente() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const mensajeDiv = document.getElementById('mensaje');
 
-    const apiUrl = 'http://localhost:3301/login'; // Asegúrate de que el puerto sea correcto
+    mensajeDiv.textContent = ''; 
+    mensajeDiv.className = ''; 
+
+    if (!email || !password) {
+        mensajeDiv.textContent = 'Por favor, ingresa tu email y contraseña.';
+        mensajeDiv.className = 'error';
+        return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        mensajeDiv.textContent = 'Por favor, ingresa un formato de email válido.';
+        mensajeDiv.className = 'error';
+        return;
+    }
 
     try {
-        const response = await fetch(apiUrl, {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const djangoLoginUrl = '/login_cliente_django/'; 
+
+        const response = await fetch(djangoLoginUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken, 
             },
-            body: JSON.stringify(loginData)
+            body: JSON.stringify({ email: email, password: password }) 
         });
 
-        const result = await response.json();
-        const mensajeDiv = document.getElementById('mensaje');
+        const result = await response.json(); 
 
-        if (response.ok) {
-            mensajeDiv.className = 'exito';
+        if (response.ok && result.success) { 
             mensajeDiv.textContent = result.message || 'Inicio de sesión exitoso.';
+            mensajeDiv.className = 'exito';
             console.log('Inicio de sesión exitoso:', result);
-            
-            // Espera 3 segundos (3000 milisegundos) y luego redirige
-            setTimeout(() => {
-                window.location.href = '/'; // Redirige tras el éxito
-            }, 3000); 
 
-        } else {
+            setTimeout(() => {
+                window.location.href = result.redirect_url || '/'; 
+            }, 1500); 
+
+        } else { 
+            mensajeDiv.textContent = result.message || 'Error al iniciar sesión. Credenciales inválidas.';
             mensajeDiv.className = 'error';
-            mensajeDiv.textContent = result.error || 'Error al iniciar sesión. Credenciales inválidas.';
             console.error('Error al iniciar sesión:', result);
         }
 
-    } catch (error) {
-        const mensajeDiv = document.getElementById('mensaje');
+    } catch (error) { 
+        mensajeDiv.textContent = 'Error de conexión con el servidor.';
         mensajeDiv.className = 'error';
-        mensajeDiv.textContent = 'Error de conexión con la API.';
         console.error('Error de conexión:', error);
     }
 }
+
+
+//AL MOMENTO DE AGREGAR NUEVO CLIENTE SE DEBE EJECUTAR EL SIGUIENTE COMANDO
+//py manage.py import_clientes
