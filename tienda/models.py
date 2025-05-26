@@ -79,7 +79,7 @@ class Contador(models.Model):
 from django.db import models
 
 class Pedido(models.Model):
-    id_pedido = models.CharField(max_length=10, primary_key=True)
+    id_pedido = models.CharField(max_length=50, primary_key=True)
     cliente = models.ForeignKey('Cliente', on_delete=models.PROTECT, db_column='id_cliente')
     vendedor = models.ForeignKey('Vendedor', on_delete=models.PROTECT, db_column='id_vendedor')
     bodeguero = models.ForeignKey('Bodeguero', on_delete=models.PROTECT, db_column='id_bodeguero')
@@ -100,6 +100,20 @@ class DetallePedido(models.Model):
     class Meta:
         db_table = 'DETALLE_PEDIDO'
         unique_together = ('pedido', 'producto')  # Define la clave primaria compuesta
+
+    def __str__(self):
+        return f"DetallePedido(pedido={self.pedido}, producto={self.producto}, cantidad={self.cantidad}, precio_unitario={self.precio_unitario})"
+
+    @classmethod
+    def crear_detalle(cls, pedido, producto, cantidad, precio_unitario):
+        detalle = cls(
+            pedido=pedido,
+            producto=producto,
+            cantidad=cantidad,
+            precio_unitario=precio_unitario
+        )
+        detalle.save()
+        return detalle
 
 class Inventario(models.Model):
     sucursal = models.ForeignKey('Sucursal', on_delete=models.PROTECT, db_column='id_sucursal', primary_key=False)

@@ -15,6 +15,8 @@ urlpatterns = [
     path('panel_ad/', views.panel_ad, name='panel_administrador'),
     path('login_a/', views.login_a, name='login_a'),
     path('agregar_empleado/', views.agregar_e, name='agregar_empleado'),
+    path('guardar_pedido/', views.guardar_pedido, name='guardar_pedido'),
+
     
 
 
