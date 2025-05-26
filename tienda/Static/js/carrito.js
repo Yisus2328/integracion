@@ -200,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 pedido_id: details.id, // Usa el id de PayPal como id_pedido
                                 productos: carrito,    // El array de productos del carrito
                                 total: totalUsd
+                                
                             })
                         })
                         .then(response => response.json())

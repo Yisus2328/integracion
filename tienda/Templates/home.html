@@ -56,53 +56,18 @@
     <main>
         <section id="productos">
             <h2>Productos Destacados</h2>
-            <div class="productos-grid">
-           <div class="producto" data-id="PRO1">
-    <img src="{% static 'img/TALADRO.jpg' %}" alt="Taladro Somix" loading="lazy" />
-    <h3>Taladro Somix</h3>
-    <p class="precio-usd">USD 2</p>
-    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
-    <button class="btn-comprar" data-index="0">Añadir al carrito</button>
-</div>
 
-<div class="producto" data-id="PRO2">
-    <img src="{% static 'img/alicate.jpg' %}" alt="Alicate" loading="lazy" />
-    <h3>Alicate</h3>
-    <p class="precio-usd">USD 2</p>
-    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
-    <button class="btn-comprar" data-index="1">Añadir al carrito</button>
+<div class="productos-grid">
+    {% for producto in productos %}
+    <div class="producto" data-id="{{ producto.id_producto }}">
+        <img src="{% static 'img/TALADRO.jpg' %}" alt="{{ producto.nombre }}" loading="lazy" />
+        <h3>{{ producto.nombre }}</h3>
+        <p class="precio-usd">USD {{ producto.precio }}</p>
+        <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
+        <button class="btn-comprar" data-index="{{ forloop.counter0 }}">Añadir al carrito</button>
+    </div>
+    {% endfor %}
 </div>
-
-<div class="producto" data-id="PRO3">
-    <img src="{% static 'img/destonillador.avif' %}" alt="Destornillador" loading="lazy" />
-    <h3>Destornillador</h3>
-    <p class="precio-usd">USD 2</p>
-    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
-    <button class="btn-comprar" data-index="2">Añadir al carrito</button>
-</div>
-
-<div class="producto" data-id="PRO4">
-    <img src="{% static 'img/clavo.jpg' %}" alt="Clavo" loading="lazy" />
-    <h3>Clavo</h3>
-    <p class="precio-usd">USD 1</p>
-    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
-    <button class="btn-comprar" data-index="3">Añadir al carrito</button>
-</div>
-
-<div class="producto" data-id="PRO5">
-    <img src="{% static 'img/casco.webp' %}" alt="Casco De Seguridad" loading="lazy" />
-    <h3>Casco De Seguridad</h3>
-    <p class="precio-usd">USD 3</p>
-    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
-    <button class="btn-comprar" data-index="4">Añadir al carrito</button>
-</div>
-
-<div class="producto" data-id="PRO6">
-    <img src="{% static 'img/guantes.webp' %}" alt="Guantes De Seguridad" loading="lazy" />
-    <h3>Guantes De Seguridad</h3>
-    <p class="precio-usd">USD 5.00</p>
-    <p class="precio-clp">$<span class="valor-convertido">0</span> CLP</p>
-    <button class="btn-comprar" data-index="5">Añadir al carrito</button>
 </div>
         </section>
     </main>
