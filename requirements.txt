@@ -19,3 +19,5 @@ urllib3==2.4.0
 #venv\Scripts\activate
 #pip install -r requirements.txt o py -m pip install -r requirements.txt
 #py manage.py runserver
+#AL MOMENTO DE AGREGAR NUEVO CLIENTE SE DEBE EJECUTAR EL SIGUIENTE COMANDO
+#py manage.py import_clientes

@@ -17,7 +17,7 @@
         <h1>Ferremas</h1>
         
         <ul class="nav-links">
-            <li><a href="/home" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+            <li><a href="/" class="active"><i class="fas fa-home"></i> Inicio</a></li>
             <li class="dropdown">
                 <a href="#"><i class="fas fa-tools"></i> Productos <i class="fas fa-chevron-down"></i></a>
                 <ul class="dropdown-menu">
@@ -46,12 +46,9 @@
 
         {% if user.is_authenticated %}
             <div class="user-info">
-                {# Enlace al perfil del cliente (opcional, si tienes una vista de perfil detallada) #}
                     <i class="fas fa-user-circle"></i>
                     <span class="user-name">Hola, {{ user.cliente_profile.nombre|default:user.username }}</span>
                 </a>
-
-                {# CAMBIO AQUÍ: Usar un formulario POST para cerrar sesión #}
                 <form action="{% url 'logout_cliente' %}" method="post" style="display:inline;">
                     {% csrf_token %} {# ¡MUY IMPORTANTE para seguridad en Django! #}
                     <button type="submit" class="logout-btn" title="Cerrar sesión">
@@ -59,6 +56,12 @@
                     </button>
                 </form>
             </div>
+
+            <button class="cart-btn" id="abrir-carrito" title="Carrito">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="contador-carrito">0</span>
+            </button>
+            
         {% else %}
             <a href="/index" class="login-btn" title="Iniciar sesión">
                 <i class="fas fa-user"></i>
@@ -69,10 +72,6 @@
 
 
 
-        <button class="cart-btn" id="abrir-carrito" title="Carrito">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="cart-count" id="contador-carrito">0</span>
-        </button>
     </nav>
 
     <main>

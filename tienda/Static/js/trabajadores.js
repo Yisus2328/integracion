@@ -1,18 +1,27 @@
 function iniciarSesionTrabajador() {
-    const idTrabajador = document.getElementById('id_trabajador').value.trim();
-    const rutTrabajador = document.getElementById('rut_trabajador').value.trim();
-    const mensajeDiv = document.getElementById('mensaje');
+    const trabajadorId = document.getElementById('trabajador_id').value.trim();
+    const trabajadorEmail = document.getElementById('trabajador_email').value.trim();
+    const trabajadorPassword = document.getElementById('trabajador_password').value.trim();
+    const mensajeDiv = document.getElementById('mensaje'); // Mantener el mismo ID para el div de mensajes
 
-    mensajeDiv.textContent = '';
+    mensajeDiv.textContent = ''; // Limpiar mensajes anteriores
 
-    if (!idTrabajador || !rutTrabajador) {
-        mensajeDiv.textContent = 'Por favor, ingresa tu ID y RUT.';
+    if (!trabajadorId || !trabajadorEmail || !trabajadorPassword) {
+        mensajeDiv.textContent = 'Por favor, ingresa tu ID, email y contraseña.';
         mensajeDiv.style.color = 'red';
         return;
     }
 
-    const idPrefix = idTrabajador.substring(0, 2).toUpperCase(); 
+    // Validación de formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trabajadorEmail)) {
+        mensajeDiv.textContent = 'Por favor, ingresa un formato de email válido.';
+        mensajeDiv.style.color = 'red';
+        return;
+    }
 
+    // Validación de prefijo de ID (se mantiene del código anterior)
+    const idPrefix = trabajadorId.substring(0, 2).toUpperCase(); 
     if (idPrefix !== 'BO' && idPrefix !== 'CO' && idPrefix !== 'VE') {
         mensajeDiv.textContent = 'El ID de trabajador debe comenzar con BO (Bodeguero), CO (Contador) o VE (Vendedor).';
         mensajeDiv.style.color = 'red';
@@ -20,8 +29,9 @@ function iniciarSesionTrabajador() {
     }
 
     const data = {
-        id_trabajador: idTrabajador,
-        rut_trabajador: rutTrabajador
+        id: trabajadorId,          // Renombrado a 'id' para consistencia con admin
+        email: trabajadorEmail,    // Nuevo campo
+        contraseña: trabajadorPassword // Nuevo campo
     };
 
     const apiUrl = 'http://localhost:3301/login/trabajadores';
@@ -46,16 +56,17 @@ function iniciarSesionTrabajador() {
             mensajeDiv.textContent = data.message || 'Inicio de sesión exitoso.';
             mensajeDiv.style.color = 'green';
 
-            // --- ¡ESTE ES EL ÚNICO BLOQUE DE REDIRECCIÓN NECESARIO! ---
             setTimeout(() => {
                 if (data.redirect_url) {
                     window.location.href = data.redirect_url;
                 } else {
-                    window.location.href = '/index/';
+                    // Fallback por si la API no envía redirect_url
+                    // En este caso, el servidor Node.js debería enviar una URL específica
+                    window.location.href = '/index/'; 
                 }
             }, 3000); // 3000 milisegundos = 3 segundos
         } else {
-            mensajeDiv.textContent = data.message || 'Error: ID de trabajador o RUT incorrecto.';
+            mensajeDiv.textContent = data.message || 'Error: Credenciales de trabajador incorrectas.';
             mensajeDiv.style.color = 'red';
         }
     })

@@ -20,7 +20,7 @@ urlpatterns = [
 
     path('producto/procesar_agregar/', views.procesar_agregar_producto, name='procesar_agregar_producto'),     
     path('login_cliente_django/', views.login_cliente_django, name='login_cliente_django'),
-    path('logout_cliente/', auth_views.LogoutView.as_view(next_page='/index/'), name='logout_cliente'),
+    path('logout_cliente/', auth_views.LogoutView.as_view(next_page='/'), name='logout_cliente'),
 
 
 ]

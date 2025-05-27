@@ -1,15 +1,44 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es"> 
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>vista bodeguero</title>
-    <link rel="stylesheet" href="{% static 'css/indexx.css' %}">
+    <title>Panel Bodeguero - Pedidos Pagados</title>
+    <link rel="stylesheet" href="{% static 'css/bodeguero.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
 </head>
+<body>
+    <div class="container">
+        <h1>Gestión de Pedidos - Bodeguero</h1>
+        <p>Aquí puedes ver y gestionar los pedidos con estado "Pagado".</p>
 
-<h1>VISTA DE BODEGUEROS</h1>
+        <div id="mensaje"></div>
+        <div id="loadingSpinner" class="loading-spinner"></div>
 
 
+        <div id="pedidosTableContainer">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Rut cliente</th> {# CAMBIO AQUÍ #}
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="pedidosTableBody">
+                    <tr><td colspan="6">Cargando pedidos...</td></tr> {# CAMBIO COLSPAN a 6 #}
+                </tbody>
+            </table>
+        </div>
+        <p id="noPedidosMessage" style="text-align: center; margin-top: 20px; display: none;">No hay pedidos con estado "Pagado" en este momento.</p>
 
+        <a href="/login_t/">Volver al espacio para trabajadores</a>
+    </div>
+
+    <script src="{% static 'js/bodeguero.js' %}"></script>
+</body>
 </html>
