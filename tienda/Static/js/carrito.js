@@ -158,7 +158,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function actualizarTotalesConEnvio() {
-        const totalUsd = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0);
+        // Calcular total de artículos
+        const cantidadArticulos = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+        let totalUsd = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0);
+
+        // Aplicar descuento si hay más de 4 artículos
+        let descuento = 0;
+        if (cantidadArticulos > 4) {
+            descuento = totalUsd * 0.10; // 10% de descuento
+            totalUsd = totalUsd - descuento;
+        }
+
         const totalConEnvioUsd = totalUsd + costoEnvio;
         const totalClp = totalConEnvioUsd * valorDolar;
 
@@ -167,17 +177,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
         costoEnvioUsdElement.textContent = costoEnvio.toFixed(2);
         costoEnvioClpElement.textContent = Math.round(costoEnvio * valorDolar).toLocaleString();
+
+        // Mostrar el descuento si aplica
+        let descuentoElement = document.getElementById('descuento-carrito');
+        if (!descuentoElement) {
+            descuentoElement = document.createElement('p');
+            descuentoElement.id = 'descuento-carrito';
+            descuentoElement.style.color = '#28a745';
+            totalUsdElement.parentElement.parentElement.insertBefore(descuentoElement, totalUsdElement.parentElement.nextSibling);
+        }
+        if (descuento > 0) {
+            descuentoElement.textContent = `¡Descuento aplicado: -$${descuento.toFixed(2)} USD!`;
+            descuentoElement.style.display = 'block';
+        } else {
+            descuentoElement.style.display = 'none';
+        }
     }
 
     function renderizarBotonPaypal() {
         comprarBtnContainer.innerHTML = ''; // limpiar contenedor antes
 
-        const totalUsd = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0) + costoEnvio;
+        // Calcular total de artículos y total USD con descuento si aplica
+        const cantidadArticulos = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+        let totalUsd = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0);
 
-        if (totalUsd > 0 && typeof paypal !== "undefined" && paypal.Buttons) {
+        if (cantidadArticulos > 4) {
+            totalUsd = totalUsd - (totalUsd * 0.10);
+        }
+
+        const totalConEnvioUsd = totalUsd + costoEnvio;
+
+        if (totalConEnvioUsd > 0 && typeof paypal !== "undefined" && paypal.Buttons) {
             paypal.Buttons({
                 createOrder: function(_, actions) {
-                    const totalActual = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0) + costoEnvio;
+                    // Recalcular total por si acaso
+                    let totalActual = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0);
+                    if (cantidadArticulos > 4) {
+                        totalActual = totalActual - (totalActual * 0.10);
+                    }
+                    totalActual = totalActual + costoEnvio;
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
@@ -199,8 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             body: JSON.stringify({
                                 pedido_id: details.id, // Usa el id de PayPal como id_pedido
                                 productos: carrito,    // El array de productos del carrito
-                                total: totalUsd
-                                
+                                total: totalConEnvioUsd
                             })
                         })
                         .then(response => response.json())
@@ -208,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (data.status === 'ok') {
                                 // Copia los productos antes de vaciar el carrito
                                 const productosComprados = carrito.slice();
-                                mostrarModalConfirmacion(details, totalUsd, productosComprados);
+                                mostrarModalConfirmacion(details, totalConEnvioUsd, productosComprados);
                                 vaciarCarrito();
                                 cerrarCarrito();
                             } else {
