@@ -46,11 +46,13 @@
 
         {% if user.is_authenticated %}
             <div class="user-info">
-                    <i class="fas fa-user-circle"></i>
-                    <span class="user-name">Hola, {{ user.cliente_profile.nombre|default:user.username }}</span>
+                
+                <a href="{% url 'mi_cuenta_cliente' %}" class="btn-mi-cuenta" title="Mi Cuenta">
+                    Mi Cuenta
                 </a>
+
                 <form action="{% url 'logout_cliente' %}" method="post" style="display:inline;">
-                    {% csrf_token %} {# ¡MUY IMPORTANTE para seguridad en Django! #}
+                    {% csrf_token %} 
                     <button type="submit" class="logout-btn" title="Cerrar sesión">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
@@ -68,7 +70,6 @@
                 <span class="login-text">Iniciar Sesion</span>
             </a>
         {% endif %}
-
 
 
 

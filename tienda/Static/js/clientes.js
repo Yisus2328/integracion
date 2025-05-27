@@ -87,6 +87,10 @@ async function iniciarSesionCliente() {
             mensajeDiv.className = 'exito';
             console.log('Inicio de sesión exitoso:', result);
 
+            if (result.rut) {
+                localStorage.setItem('cliente_rut', result.rut);
+            }
+
             setTimeout(() => {
                 window.location.href = result.redirect_url || '/'; 
             }, 1500); 

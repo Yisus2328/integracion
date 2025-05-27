@@ -1,0 +1,164 @@
+ /* Estilos básicos para esta página */
+        body { font-family: sans-serif; background-color: #f8f9fa; color: #333; margin: 0; padding: 20px;}
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1, h2 { color: #0056b3; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        .data-section p { margin-bottom: 10px; font-size: 1.1em;}
+        .data-section span { font-weight: bold; color: #555; display: inline-block; width: 120px;}
+        .data-section p strong { color: #000; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .message-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .message-info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+
+body {
+    margin: 0; /* Asegura que no haya márgenes alrededor del body */
+    padding: 0; /* Asegura que no haya padding alrededor del body */
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5; /* Un fondo claro general para la página */
+}
+
+/* --- Estilos para la barra superior --- */
+.top-bar {
+    background-color: #343a40; /* Color oscuro similar a tu barra lateral anterior */
+    color: white;
+    padding: 15px 0; /* Padding vertical, sin padding horizontal aquí */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombra sutil debajo */
+    display: flex;
+    justify-content: center; /* Centra el contenido (top-bar-content) */
+    align-items: center;
+    width: 100%; /* Asegura que la barra ocupe todo el ancho disponible */
+    box-sizing: border-box; /* Incluye padding en el ancho total */
+    /* !QUITAR ESTO SI EXISTE! margin-left: auto; margin-right: auto; max-width: ... */
+}
+
+.top-bar-content {
+    max-width: 1200px; /* Ancho máximo para el contenido dentro de la barra (ej: 1200px) */
+    width: 100%; /* HACER QUE OCUPE EL 100% DEL max-width */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px; /* AÑADIR UN PEQUEÑO PADDING HORIZONTAL INTERNO PARA EL CONTENIDO */
+    box-sizing: border-box; /* Asegura que el padding se incluya en el 100% */
+}
+
+.app-title {
+    margin: 0;
+    font-size: 1.8em;
+    color: #f8f9fa;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.home-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 18px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.home-button:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+/* Estilos existentes para el contenido, mensajes, tablas, etc. */
+h1 {
+    color: #343a40;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #495057;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.data-section p {
+    margin: 8px 0;
+}
+
+.data-section span {
+    font-weight: bold;
+    color: #666;
+    display: inline-block;
+    width: 100px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.message {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.message-info {
+    background-color: #e7f3fe;
+    color: #004085;
+    border: 1px solid #b8daff;
+}
+
+.message-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}

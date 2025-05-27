@@ -17,10 +17,12 @@ urlpatterns = [
     path('login_a/', views.login_a, name='login_a'),
     path('agregar_empleado/', views.agregar_e, name='agregar_empleado'),
     path('guardar_pedido/', views.guardar_pedido, name='guardar_pedido'),
+    path('mi_cuenta/', views.mi_cuenta_cliente, name='mi_cuenta_cliente'),
 
     path('producto/procesar_agregar/', views.procesar_agregar_producto, name='procesar_agregar_producto'),     
     path('login_cliente_django/', views.login_cliente_django, name='login_cliente_django'),
     path('logout_cliente/', auth_views.LogoutView.as_view(next_page='/'), name='logout_cliente'),
+    path('api/get_cliente_data/', views.get_cliente_data, name='get_cliente_data_api'),
 
 
 ]

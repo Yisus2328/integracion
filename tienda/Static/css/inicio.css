@@ -473,3 +473,57 @@
 }
 
 
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre los elementos */
+}
+
+.user-info .fas {
+    font-size: 1.2em; /* Ajusta el tamaño del ícono */
+    color: #bbb; /* Color del ícono de usuario, si quieres que se vea */
+}
+
+/* Estilos para el botón "Mi Cuenta" */
+.btn-mi-cuenta {
+    background-color: #007bff; /* Color azul */
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none; /* Elimina el subrayado */
+    font-weight: bold;
+    /* margin-right: 10px; */ /* Si ya tienes gap en user-info, este margin puede ser redundante o causar doble espacio */
+    transition: background-color 0.3s ease;
+    display: inline-flex; /* Usar flexbox para alinear contenido (icono y texto) */
+    align-items: center; /* Centrar verticalmente */
+    justify-content: center; /* Centrar horizontalmente */
+    gap: 5px; /* Espacio entre icono y texto si se añade icono */
+    min-width: 90px; /* Ancho mínimo para que se vea como botón */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+}
+
+.btn-mi-cuenta:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos para el botón "Cerrar Sesión" */
+.logout-btn {
+    background-color: #dc3545; /* Color rojo */
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    display: inline-flex; /* Usar flexbox para alinear contenido (icono y texto) */
+    align-items: center; /* Centrar verticalmente */
+    justify-content: center; /* Centrar horizontalmente */
+    gap: 5px; /* Espacio entre icono y texto */
+    min-width: 90px;
+    box-sizing: border-box;
+}
+
+.logout-btn:hover {
+    background-color: #c82333;
+}

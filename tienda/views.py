@@ -61,6 +61,9 @@ def pago(request):
 def checkout(request):
     return render(request, 'checkout.html')
 
+def mi_cuenta_cliente(request):
+    return render(request, 'mi_cuenta.html')
+
 
 
 
@@ -241,3 +244,49 @@ def login_cliente_django(request):
             return JsonResponse({'success': False, 'message': 'Error interno del servidor.'}, status=500)
 
     return JsonResponse({'success': False, 'message': 'Método no permitido.'}, status=405)
+
+
+
+def get_cliente_data(request): # ¡Ahora esta función obtendrá todo!
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'message': 'No autenticado'}, status=401)
+
+    try:
+        # 1. Obtener el perfil de cliente
+        cliente = request.user.cliente_profile
+        
+        # Prepara los datos del cliente
+        cliente_data = {
+            'rut': cliente.rut,
+            'nombre': cliente.nombre,
+            'email': cliente.email,
+            'telefono': cliente.telefono,
+            'direccion': cliente.direccion,
+        }
+
+        # 2. Obtener los pedidos asociados a este cliente
+        pedidos = cliente.pedidos.all().order_by('-fecha') # Ordenamos por fecha descendente
+
+        pedidos_list_data = []
+        for pedido in pedidos:
+            pedidos_list_data.append({
+                'id_pedido': pedido.id_pedido,
+                'fecha': pedido.fecha.strftime('%Y-%m-%d %H:%M'), # Formatear la fecha
+                'estado': pedido.estado,
+                'tipo_entrega': pedido.tipo_entrega,
+                'direccion_entrega': pedido.direccion_entrega, 
+                # Agrega más campos si son relevantes para mostrar
+            })
+        
+        # 3. Combinar los datos del cliente y los pedidos en una única respuesta JSON
+        return JsonResponse({
+            'success': True,
+            'cliente': cliente_data,
+            'pedidos': pedidos_list_data
+        })
+
+    except Cliente.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'No se encontró perfil de cliente para este usuario.'}, status=404)
+    except Exception as e:
+        print(f"Error en get_cliente_data (clientes y pedidos): {e}") # Mensaje de error más descriptivo
+        return JsonResponse({'success': False, 'message': 'Error interno del servidor al obtener datos del cliente y sus pedidos.'}, status=500)

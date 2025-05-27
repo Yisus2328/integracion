@@ -1,31 +1,46 @@
-/* Estilos básicos para la tabla y botones */
+
+        /* Estilos básicos para la tabla y botones (puedes moverlos a bodeguero.css) */
         body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
-        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1, h2 { text-align: center; color: #333; margin-top: 20px; margin-bottom: 15px; }
+        .pedidos-section { margin-bottom: 40px; }
+        .pedidos-section h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background-color: #f2f2f2; }
-        .estado-pagado { color: #28a745; font-weight: bold; } /* Color para estado 'Pagado' */
-        .estado-procesado { color: #007bff; font-weight: bold; } /* Color para estado 'Procesado' */
-        .btn-procesar {
-            background-color: #ffc107; /* Amarillo */
+        .estado-pagado { color: #007bff; font-weight: bold; }
+        .estado-en_preparacion { color: #ffc107; font-weight: bold; } /* Amarillo/Naranja */
+        .estado-preparado { color: #28a745; font-weight: bold; } /* Verde */
+
+        .action-button {
+            background-color: #17a2b8; /* Azul claro */
             color: white;
             padding: 8px 12px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.9em;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
         }
-        .btn-procesar:hover {
-            background-color: #e0a800;
+        .action-button:hover {
+            background-color: #138496;
         }
+
+        /* Colores específicos para los botones de transición */
+        .btn-en-preparacion { background-color: #28a745; } /* Verde */
+        .btn-en-preparacion:hover { background-color: #218838; }
+
+        .btn-preparado { background-color: #ffc107; color: #333; } /* Amarillo/Naranja */
+        .btn-preparado:hover { background-color: #e0a800; }
+
         #mensaje {
             margin-top: 15px;
             padding: 10px;
             border-radius: 5px;
             font-weight: bold;
             text-align: center;
-            display: none; /* Oculto por defecto */
+            display: none;
         }
         .mensaje-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .mensaje-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
@@ -40,10 +55,10 @@
             display: inline-block;
             vertical-align: middle;
             margin-left: 10px;
-            display: none; /* Oculto por defecto */
+            display: none;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+    

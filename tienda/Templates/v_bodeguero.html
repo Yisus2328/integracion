@@ -4,39 +4,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Bodeguero - Pedidos Pagados</title>
+    <title>Gestión de Pedidos - Bodeguero</title>
     <link rel="stylesheet" href="{% static 'css/bodeguero.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-
 </head>
 <body>
     <div class="container">
         <h1>Gestión de Pedidos - Bodeguero</h1>
-        <p>Aquí puedes ver y gestionar los pedidos con estado "Pagado".</p>
+        <p>Aquí puedes ver y gestionar los pedidos en sus diferentes etapas.</p>
 
         <div id="mensaje"></div>
         <div id="loadingSpinner" class="loading-spinner"></div>
 
-
-        <div id="pedidosTableContainer">
-            <table>
+        <div class="pedidos-section">
+            <h2>Pedidos Pagados</h2>
+            <table class="pedidos-table">
                 <thead>
                     <tr>
                         <th>ID Pedido</th>
-                        <th>Rut cliente</th> {# CAMBIO AQUÍ #}
+                        <th>Rut Cliente</th>
                         <th>Fecha</th>
                         <th>Estado</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
-                <tbody id="pedidosTableBody">
-                    <tr><td colspan="6">Cargando pedidos...</td></tr> {# CAMBIO COLSPAN a 6 #}
+                <tbody id="pedidosPagadosTableBody">
+                    <tr><td colspan="5">Cargando pedidos pagados...</td></tr>
                 </tbody>
             </table>
+            <p id="noPedidosPagadosMessage" style="text-align: center; margin-top: 20px; display: none;">No hay pedidos con estado "Pagado" en este momento.</p>
         </div>
-        <p id="noPedidosMessage" style="text-align: center; margin-top: 20px; display: none;">No hay pedidos con estado "Pagado" en este momento.</p>
 
-        <a href="/login_t/">Volver al espacio para trabajadores</a>
+        <div class="pedidos-section">
+            <h2>Pedidos en Preparación</h2>
+            <table class="pedidos-table">
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Rut Cliente</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="pedidosEnPreparacionTableBody">
+                    <tr><td colspan="5">Cargando pedidos en preparación...</td></tr>
+                </tbody>
+            </table>
+            <p id="noPedidosEnPreparacionMessage" style="text-align: center; margin-top: 20px; display: none;">No hay pedidos con estado "En Preparación" en este momento.</p>
+        </div>
+
+        <div class="pedidos-section">
+            <h2>Pedidos Preparados</h2>
+            <table class="pedidos-table">
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Rut Cliente</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acción</th> {# Esta columna estará vacía para los preparados #}
+                    </tr>
+                </thead>
+                <tbody id="pedidosPreparadosTableBody">
+                    <tr><td colspan="5">Cargando pedidos preparados...</td></tr>
+                </tbody>
+            </table>
+            <p id="noPedidosPreparadosMessage" style="text-align: center; margin-top: 20px; display: none;">No hay pedidos con estado "Preparado" en este momento.</p>
+        </div>
+
+        <a href="/login_t/" style="display: block; text-align: center; margin-top: 30px;">Volver al espacio para trabajadores</a>
     </div>
 
     <script src="{% static 'js/bodeguero.js' %}"></script>

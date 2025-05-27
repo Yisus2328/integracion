@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Cuenta - Ferremas</title>
+    <link rel="stylesheet" href="{% static 'css/mi_cuenta.css' %}">
+    </head>
+<body>
+
+    <header class="top-bar">
+        <div class="top-bar-content">
+            <h1 class="app-title">Ferremas</h1>
+            <a href="{% url 'home' %}" class="home-button">Volver al Home</a> 
+        </div>
+    </header>
+
+    <div class="main-content"> 
+        <div class="container">
+            <h1>Mi Cuenta</h1>
+            <div id="loadingMessage" class="message message-info" style="display: none;">Cargando datos...</div>
+            <div id="errorMessage" class="message message-error" style="display: none;"></div>
+
+            <h2>Mis Datos Personales</h2>
+            <div id="clientData" class="data-section">
+                <p><span>RUT:</span> <strong id="clienteRut"></strong></p>
+                <p><span>Nombre:</span> <strong id="clienteNombre"></strong></p>
+                <p><span>Email:</span> <strong id="clienteEmail"></strong></p>
+                <p><span>Teléfono:</span> <strong id="clienteTelefono"></strong></p>
+                <p><span>Dirección:</span> <strong id="clienteDireccion"></strong></p>
+            </div>
+
+            <h2>Mis Pedidos</h2>
+            <div id="ordersSection">
+                <table id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Tipo Entrega</th>
+                            <th>Dirección Entrega</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                       
+                    </tbody>
+                </table>
+                <p id="noOrdersMessage" style="display: none; text-align: center; margin-top: 20px; color: #666;">No tienes pedidos registrados.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/mi_cuenta.js' %}"></script>
+</body>
+</html>

@@ -24,6 +24,9 @@ class Cliente(models.Model):
     class Meta:
         db_table = 'CLIENTE'
 
+    def __str__(self):
+        return f"{self.nombre} ({self.rut})"
+
 
 class Producto(models.Model):
     id_producto = models.CharField(max_length=10, primary_key=True)
@@ -85,7 +88,7 @@ from django.db import models
 
 class Pedido(models.Model):
     id_pedido = models.CharField(max_length=50, primary_key=True)
-    cliente = models.ForeignKey('Cliente', on_delete=models.PROTECT, db_column='rut')
+    cliente = models.ForeignKey('Cliente', on_delete=models.PROTECT, db_column='rut', related_name='pedidos')
     vendedor = models.ForeignKey('Vendedor', on_delete=models.PROTECT, db_column='id_vendedor')
     bodeguero = models.ForeignKey('Bodeguero', on_delete=models.PROTECT, db_column='id_bodeguero')
     fecha = models.DateTimeField(auto_now_add=True)
@@ -95,6 +98,9 @@ class Pedido(models.Model):
 
     class Meta:
         db_table = 'PEDIDO'
+
+    def __str__(self):
+        return f"Pedido {self.id_pedido} de {self.cliente.nombre}"
 
 class DetallePedido(models.Model):
     pedido = models.ForeignKey('Pedido', on_delete=models.CASCADE, db_column='id_pedido', primary_key=False)
