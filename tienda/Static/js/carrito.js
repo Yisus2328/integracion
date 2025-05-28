@@ -35,9 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'estandar':
                 costoEnvio = 5.00;
                 break;
-            case 'express':
-                costoEnvio = 15.00;
-                break;
             case 'retiro':
                 costoEnvio = 0.00;
                 break;
@@ -48,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function () {
         renderizarBotonPaypal();
     });
 
-    // Observa cambios en el valor dólar para actualizar cálculos automáticamente
     const observer = new MutationObserver(() => {
         valorDolar = parseFloat(valorDolarElement.textContent.replace('$', '')) || 0;
         actualizarPreciosCLP();
@@ -75,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function agregarAlCarrito(index) {
     const productoElement = document.querySelectorAll('.producto')[index];
-    const idReal = productoElement.getAttribute('data-id'); // <-- id real de la base de datos
+    const idReal = productoElement.getAttribute('data-id');
     const producto = {
         id: idReal,
         nombre: productoElement.querySelector('h3').textContent,
@@ -116,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
                 carritoItemsContainer.innerHTML += itemHTML;
             });
-            // Asignar eventos a los botones eliminar
             document.querySelectorAll('.btn-eliminar').forEach(btn => {
                 btn.addEventListener('click', function () {
                     eliminarDelCarrito(parseInt(this.getAttribute('data-index')));
@@ -158,14 +153,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function actualizarTotalesConEnvio() {
-        // Calcular total de artículos
         const cantidadArticulos = carrito.reduce((acc, item) => acc + item.cantidad, 0);
         let totalUsd = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0);
 
-        // Aplicar descuento si hay más de 4 artículos
         let descuento = 0;
         if (cantidadArticulos > 4) {
-            descuento = totalUsd * 0.10; // 10% de descuento
+            descuento = totalUsd * 0.10;
             totalUsd = totalUsd - descuento;
         }
 
@@ -178,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function () {
         costoEnvioUsdElement.textContent = costoEnvio.toFixed(2);
         costoEnvioClpElement.textContent = Math.round(costoEnvio * valorDolar).toLocaleString();
 
-        // Mostrar el descuento si aplica
         let descuentoElement = document.getElementById('descuento-carrito');
         if (!descuentoElement) {
             descuentoElement = document.createElement('p');
@@ -195,9 +187,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderizarBotonPaypal() {
-        comprarBtnContainer.innerHTML = ''; // limpiar contenedor antes
+        comprarBtnContainer.innerHTML = '';
+        const btnDiv = document.createElement('div');
+        btnDiv.id = 'paypal-button-container';
+        comprarBtnContainer.appendChild(btnDiv);
 
-        // Calcular total de artículos y total USD con descuento si aplica
         const cantidadArticulos = carrito.reduce((acc, item) => acc + item.cantidad, 0);
         let totalUsd = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0);
 
@@ -210,7 +204,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (totalConEnvioUsd > 0 && typeof paypal !== "undefined" && paypal.Buttons) {
             paypal.Buttons({
                 createOrder: function(_, actions) {
-                    // Recalcular total por si acaso
                     let totalActual = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0);
                     if (cantidadArticulos > 4) {
                         totalActual = totalActual - (totalActual * 0.10);
@@ -227,7 +220,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 onApprove: function(_, actions) {
                     return actions.order.capture().then(function(details) {
-                        // Guardar el detalle del pedido en el backend solo después del pago exitoso
                         fetch('/guardar_pedido/', {
                             method: 'POST',
                             headers: {
@@ -235,15 +227,14 @@ document.addEventListener('DOMContentLoaded', function () {
                                 'X-CSRFToken': getCookie('csrftoken')
                             },
                             body: JSON.stringify({
-                                pedido_id: details.id, // Usa el id de PayPal como id_pedido
-                                productos: carrito,    // El array de productos del carrito
+                                pedido_id: details.id,
+                                productos: carrito,
                                 total: totalConEnvioUsd
                             })
                         })
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'ok') {
-                                // Copia los productos antes de vaciar el carrito
                                 const productosComprados = carrito.slice();
                                 mostrarModalConfirmacion(details, totalConEnvioUsd, productosComprados);
                                 vaciarCarrito();
@@ -253,15 +244,13 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         })
                         .catch(() => {
-                            // mostrarError('Error de red al guardar el pedido.');
                         });
                     });
                 }
-            }).render('#comprar-btn-container');
+            }).render('#paypal-button-container');
         }
     }
 
-    // Función para mostrar el modal de confirmación
     function mostrarModalConfirmacion(details, totalUsd, productosComprados) {
         const cantidadArticulos = productosComprados.reduce((acc, item) => acc + item.cantidad, 0);
         const metodoEnvio = document.getElementById('metodo-envio').options[document.getElementById('metodo-envio').selectedIndex].text;
@@ -342,7 +331,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.insertAdjacentHTML('beforeend', modalHTML);
     }
 
-    // Función para mostrar errores (usada en onError de PayPal)
     function mostrarError(mensaje) {
         const errorHTML = `
             <div class="error-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.8);display:flex;justify-content:center;align-items:center;z-index:2000;">
@@ -356,7 +344,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.insertAdjacentHTML('beforeend', errorHTML);
     }
 
-    // Modal de envío
     function abrirModalEnvio() {
         envioModal.style.display = 'flex';
     }
@@ -375,10 +362,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Exportar para usar fuera si hace falta abrir modal
     window.abrirModalEnvio = abrirModalEnvio;
 
-    // Función para obtener el CSRF token
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {

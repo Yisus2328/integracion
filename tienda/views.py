@@ -74,7 +74,6 @@ def guardar_pedido(request):
             data = json.loads(request.body)
             from .models import Cliente, Vendedor, Bodeguero, Pedido, Producto, DetallePedido
 
-            
             try:
                 cliente_logueado = request.user.cliente_profile 
             except Cliente.DoesNotExist:
@@ -82,6 +81,20 @@ def guardar_pedido(request):
 
             vendedor = Vendedor.objects.first() 
             bodeguero = Bodeguero.objects.first() 
+
+          
+            metodo_pago = data.get('metodo_pago', 'paypal')  
+            if metodo_pago == 'transferencia':
+                estado_pedido = 'En Revision'
+            else:
+                estado_pedido = 'Pagado'
+
+        
+            metodo_envio = data.get('metodo_envio', 'estandar')  
+            if metodo_envio == 'retiro':
+                tipo_entrega = 'retiro en tienda'
+            else:
+                tipo_entrega = 'envío a domicilio'
 
             try:
                 pedido = Pedido.objects.get(id_pedido=data['pedido_id'])
@@ -91,8 +104,8 @@ def guardar_pedido(request):
                     cliente=cliente_logueado, 
                     vendedor=vendedor,
                     bodeguero=bodeguero,
-                    estado='Pagado',
-                    tipo_entrega='online',
+                    estado=estado_pedido,
+                    tipo_entrega=tipo_entrega,
                     direccion_entrega='', 
                 )
 
