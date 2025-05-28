@@ -93,7 +93,7 @@ class Pedido(models.Model):
     bodeguero = models.ForeignKey('Bodeguero', on_delete=models.PROTECT, db_column='id_bodeguero')
     fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=15)
-    tipo_entrega = models.CharField(max_length=15)
+    tipo_entrega = models.CharField(max_length=35)
     direccion_entrega = models.CharField(max_length=50, null=True, blank=True)
 
     class Meta:

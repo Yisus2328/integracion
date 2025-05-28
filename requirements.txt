@@ -21,3 +21,6 @@ urllib3==2.4.0
 #py manage.py runserver
 #AL MOMENTO DE AGREGAR NUEVO CLIENTE SE DEBE EJECUTAR EL SIGUIENTE COMANDO
 #py manage.py import_clientes
+
+#CORREO DE PAYPAL
+#sb-gvnhv42616555@personal.example.com
