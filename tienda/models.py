@@ -96,11 +96,15 @@ class Pedido(models.Model):
     tipo_entrega = models.CharField(max_length=35)
     direccion_entrega = models.CharField(max_length=50, null=True, blank=True)
 
+    comprobante_transferencia = models.FileField(upload_to='comprobantes_transferencia/', blank=True, null=True)
+
     class Meta:
         db_table = 'PEDIDO'
 
     def __str__(self):
         return f"Pedido {self.id_pedido} de {self.cliente.nombre}"
+    
+    
 
 class DetallePedido(models.Model):
     pedido = models.ForeignKey('Pedido', on_delete=models.CASCADE, db_column='id_pedido', primary_key=False)

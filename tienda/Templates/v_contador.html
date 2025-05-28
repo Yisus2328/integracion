@@ -1,15 +1,63 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es"> 
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>vista bodeguero</title>
-    <link rel="stylesheet" href="{% static 'css/indexx.css' %}">
+    <title>Vista Contador - Pedidos en Revisión</title>
+    <link rel="stylesheet" href="{% static 'css/contador.css' %}">
 </head>
+<body>
+    <h1>PEDIDOS EN REVISIÓN</h1>
 
-<h1>VISTA DE CONTADORES</h1>
+
+    <div class="pedidos-container">
+        {% csrf_token %}
+
+        {% if pedidos_en_revision %}
+            {% for pedido in pedidos_en_revision %}
+                <div class="pedido-card" id="pedido-{{ pedido.id_pedido }}">
+                    <div class="pedido-details">
+                        <h2>Pedido #{{ pedido.id_pedido }}</h2>
+                        <p><strong>Cliente:</strong> {{ pedido.cliente.nombre }} (RUT: {{ pedido.cliente.rut }})</p>
+                        <p><strong>Fecha:</strong> {{ pedido.fecha|date:"d M Y H:i" }}</p>
+                        <p><strong>Estado:</strong> <span class="estado-revision">{{ pedido.estado }}</span></p>
+                        <p><strong>Tipo de Entrega:</strong> {{ pedido.tipo_entrega }}</p>
+                        {% if pedido.direccion_entrega %}
+                            <p><strong>Dirección:</strong> {{ pedido.direccion_entrega }}</p>
+                        {% endif %}
+                        <p><strong>Vendedor:</strong> {{ pedido.vendedor.nombre }}</p>
+                        <p><strong>Bodeguero:</strong> {{ pedido.bodeguero.nombre }}</p>
+                    </div>
+                    <div class="comprobante-box">
+                        <h3>Comprobante</h3>
+                        {% if pedido.comprobante_transferencia %}
+                            <a href="{{ pedido.comprobante_transferencia.url }}" target="_blank" title="Ver comprobante en tamaño completo">
+                                <img src="{{ pedido.comprobante_transferencia.url }}" alt="Comprobante de Transferencia del Pedido {{ pedido.id_pedido }}">
+                            </a>
+                        {% else %}
+                            <p class="no-comprobante">Sin comprobante adjunto</p>
+                        {% endif %}
+                    </div>
+                    <div class="pedido-actions">
+                        <button class="btn-marcar-pagado" data-pedido-id="{{ pedido.id_pedido }}">Marcar como Pagado</button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-pedidos">
+                <p>No hay pedidos en estado "En Revisión" actualmente.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <p></p>
+        {# **NUEVO: Botón de redirección** #}
+    <div class="header-actions">
+        <a href="{% url 'login_t' %}" class="btn-trabajadores">Ir al Espacio de Trabajadores</a>
+    </div>
 
 
-
+    <script src="{% static 'js/contador.js' %}"></script>
+</body>
 </html>

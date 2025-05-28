@@ -73,7 +73,10 @@
             <p id="noPedidosPreparadosMessage" style="text-align: center; margin-top: 20px; display: none;">No hay pedidos con estado "Preparado" en este momento.</p>
         </div>
 
-        <a href="/login_t/" style="display: block; text-align: center; margin-top: 30px;">Volver al espacio para trabajadores</a>
+    </div>
+
+    <div class="header-actions">
+        <a href="{% url 'login_t' %}" class="btn-trabajadores">Ir al Espacio de Trabajadores</a>
     </div>
 
     <script src="{% static 'js/bodeguero.js' %}"></script>

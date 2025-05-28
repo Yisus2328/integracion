@@ -1,48 +1,176 @@
-        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
-        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        h1, h2 { text-align: center; color: #333; margin-top: 20px; margin-bottom: 15px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .estado-procesado { color: #007bff; font-weight: bold; } /* Color para estado 'Procesado' */
-        .estado-enviado { color: #28a745; font-weight: bold; } /* Color para estado 'Enviado' */
-        .btn-enviar {
-            background-color: #17a2b8; /* Azul claro */
-            color: white;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9em;
-        }
-        .btn-enviar:hover {
-            background-color: #138496;
-        }
-        #mensaje {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            text-align: center;
-            display: none; /* Oculto por defecto */
-        }
-        .mensaje-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .mensaje-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+ body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f7f9fc;
+    color: #333;
+}
 
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 2s linear infinite;
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 10px;
-            display: none; /* Oculto por defecto */
-        }
+h1 {
+    text-align: center;
+    color: #1a2c50; /* Azul oscuro */
+    margin-bottom: 40px;
+    font-size: 2.5em;
+    border-bottom: 2px solid #5d7e9e; /* Línea bajo el título */
+    padding-bottom: 10px;
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+}
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+.header-actions {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.btn-trabajadores {
+    display: inline-block;
+    background-color: #6c757d; /* Gris para botones secundarios */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.btn-trabajadores:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+}
+
+.pedidos-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.pedido-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border: 1px solid #e0e6ed;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 25px;
+    background-color: #fcfdfe;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out;
+}
+
+.pedido-card:hover {
+    transform: translateY(-5px);
+}
+
+.pedido-details {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.pedido-details h2 {
+    color: #17a2b8; /* Azul claro para títulos de pedido */
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.6em;
+}
+
+.pedido-details p {
+    margin: 8px 0;
+    line-height: 1.5;
+    color: #444;
+}
+
+.pedido-details strong {
+    color: #333;
+}
+
+.estado-preparado {
+    color: #007bff; /* Azul para "Preparado" */
+    font-weight: bold;
+    background-color: #e7f3ff;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.productos-lista {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #eee;
+}
+
+.productos-lista h3 {
+    color: #555;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.productos-lista ul {
+    list-style: none;
+    padding: 0;
+}
+
+.productos-lista li {
+    background-color: #f0f4f7;
+    margin-bottom: 5px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.95em;
+    color: #666;
+}
+
+.pedido-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+
+.btn-marcar-enviado {
+    background-color: #007bff; /* Azul primario para "Enviado" */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+.btn-marcar-enviado:hover {
+    background-color: #0056b3; /* Azul más oscuro */
+}
+
+.no-pedidos {
+    text-align: center;
+    padding: 40px;
+    border: 1px dashed #cce7ff;
+    border-radius: 8px;
+    color: #6c757d;
+    background-color: #f0f8ff;
+    margin-top: 30px;
+    font-size: 1.1em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pedido-card {
+        flex-direction: column;
+        align-items: center;
+    }
+    .pedido-details {
+        margin-right: 0;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .pedido-actions {
+        margin-top: 15px;
+        width: 100%;
+        justify-content: center;
+    }
+}

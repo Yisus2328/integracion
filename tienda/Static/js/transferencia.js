@@ -16,6 +16,22 @@ document.addEventListener('DOMContentLoaded', function () {
     metodoPago.addEventListener('change', actualizarMetodoPago);
     actualizarMetodoPago();
 
+    // Función auxiliar para obtener el CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
     // Modal transferencia con formulario para subir comprobante y generar pedido
     if (btnTransferencia) {
         btnTransferencia.addEventListener('click', function () {
@@ -63,26 +79,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 let costoEnvio = 0;
                 if (metodoEnvio === 'estandar') costoEnvio = 5.00;
-                // else if (metodoEnvio === 'express') costoEnvio = 15.00; // Eliminado express
                 else costoEnvio = 0;
                 const totalConEnvioUsd = totalUsd + costoEnvio;
 
                 // Generar un id de pedido temporal
                 const pedidoId = 'TRF-' + Date.now();
 
+                // 🌟🌟🌟 CAMBIO CLAVE AQUÍ: Usar FormData para enviar el archivo y los datos 🌟🌟🌟
+                const formData = new FormData();
+                formData.append('pedido_id', pedidoId);
+                formData.append('productos_json', JSON.stringify(carrito)); // Enviar productos como JSON string
+                formData.append('total', totalConEnvioUsd.toFixed(2)); // Enviar total como string
+                formData.append('metodo_pago', 'transferencia');
+                formData.append('metodo_envio', metodoEnvio);
+                formData.append('comprobante', archivo); // Añadir el archivo
+
+                // Opcional: Si tienes un campo de dirección de entrega en el formulario principal
+                const direccionEntregaInput = document.getElementById('direccion_entrega'); // Asegúrate de que exista este ID
+                if (direccionEntregaInput && metodoEnvio === 'estandar') {
+                    formData.append('direccion_entrega', direccionEntregaInput.value);
+                }
+                // 🌟🌟🌟 FIN CAMBIO CLAVE 🌟🌟🌟
+
                 fetch('/guardar_pedido/', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        // 🌟🌟🌟 MUY IMPORTANTE: NO SETTEAR 'Content-Type': 'application/json' 🌟🌟🌟
+                        // FormData lo maneja automáticamente como multipart/form-data
                         'X-CSRFToken': getCookie('csrftoken')
                     },
-                    body: JSON.stringify({
-                        pedido_id: pedidoId,
-                        productos: carrito,
-                        total: totalConEnvioUsd,
-                        metodo_pago: 'transferencia',
-                        metodo_envio: metodoEnvio
-                    })
+                    body: formData, // Enviar el objeto FormData
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -91,14 +117,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         localStorage.removeItem('carrito');
                         setTimeout(() => {
                             document.getElementById('modal-transferencia').remove();
-                            // Opcional: mostrar modal de confirmación similar a PayPal
                             mostrarModalConfirmacionTransferencia(pedidoId, totalConEnvioUsd, carrito, metodoEnvio, costoEnvio);
                         }, 1500);
                     } else {
-                        mensaje.innerHTML = '<span style="color:red;">Error al guardar el pedido: ' + (data.errores || 'Error desconocido') + '</span>';
+                        mensaje.innerHTML = '<span style="color:red;">Error al guardar el pedido: ' + (data.errores ? data.errores.join(', ') : 'Error desconocido') + '</span>';
                     }
                 })
-                .catch(() => {
+                .catch(error => {
+                    console.error('Error de red al guardar el pedido:', error);
                     mensaje.innerHTML = '<span style="color:red;">Error de red al guardar el pedido.</span>';
                 });
             });
@@ -111,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const subtotal = Math.max(0, totalUsd - costoEnvio);
         const metodoEnvioTexto = {
             'estandar': 'Estándar (5 USD)',
-        
             'retiro': 'Retiro en tienda (Gratis)'
         }[metodoEnvio] || metodoEnvio;
 
@@ -184,21 +209,4 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         document.body.insertAdjacentHTML('beforeend', modalHTML);
     }
-
-    // Función para obtener el CSRF token
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
 });
-

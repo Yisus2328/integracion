@@ -1,175 +1,74 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const botonesMarcarEnviado = document.querySelectorAll('.btn-marcar-enviado');
 
-    const pedidosProcesadosTableBody = document.getElementById('pedidosProcesadosTableBody');
-    const noPedidosProcesadosMessage = document.getElementById('noPedidosProcesadosMessage');
-    const loadingSpinnerProcesados = document.getElementById('loadingSpinnerProcesados');
+    // Obtener el token CSRF del DOM (asumiendo que {% csrf_token %} está en el HTML)
+    const csrfTokenElement = document.querySelector('input[name="csrfmiddlewaretoken"]');
+    const csrfToken = csrfTokenElement ? csrfTokenElement.value : '';
 
-
-    const pedidosEnviadosTableBody = document.getElementById('pedidosEnviadosTableBody');
-    const noPedidosEnviadosMessage = document.getElementById('noPedidosEnviadosMessage');
-    const loadingSpinnerEnviados = document.getElementById('loadingSpinnerEnviados');
-
-    const mensajeDiv = document.getElementById('mensaje'); 
-
-    const API_URL_BASE = 'http://localhost:3301'; 
-
-    async function showMessage(msg, type) {
-        mensajeDiv.textContent = msg;
-        mensajeDiv.className = '';
-        mensajeDiv.classList.add('message', `mensaje-${type}`);
-        mensajeDiv.style.display = 'block';
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        mensajeDiv.style.display = 'none';
-        mensajeDiv.textContent = '';
+    if (!csrfToken) {
+        console.error("Error: CSRF token no encontrado. Asegúrate de incluir '{% csrf_token %}' en tu template.");
+        alert("Error de seguridad: CSRF token no encontrado. Recarga la página.");
+        return;
     }
 
-    // --- Funciones para Pedidos PROCESADOS ---
-    async function fetchPedidosProcesados() {
-        pedidosProcesadosTableBody.innerHTML = '<tr><td colspan="6">Cargando pedidos procesados...</td></tr>';
-        noPedidosProcesadosMessage.style.display = 'none';
-        loadingSpinnerProcesados.style.display = 'inline-block';
+    botonesMarcarEnviado.forEach(button => {
+        button.addEventListener('click', function() {
+            const pedidoId = this.dataset.pedidoId;
+            if (confirm(`¿Estás seguro de que quieres marcar el pedido ${pedidoId} como Enviado?`)) {
+                // Deshabilitar el botón y cambiar texto
+                const originalText = button.textContent;
+                button.disabled = true;
+                button.textContent = 'Enviando...';
 
-        try {
-            const response = await fetch(`${API_URL_BASE}/pedidos/procesados`);
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al obtener los pedidos procesados.');
-            }
-            const data = await response.json();
-            
-            loadingSpinnerProcesados.style.display = 'none';
-
-            if (data.success && data.pedidos.length > 0) {
-                renderPedidosProcesados(data.pedidos);
-                pedidosProcesadosTableBody.classList.remove('empty-state');
-            } else {
-                pedidosProcesadosTableBody.innerHTML = '';
-                noPedidosProcesadosMessage.style.display = 'block';
-                pedidosProcesadosTableBody.classList.add('empty-state');
-            }
-        } catch (error) {
-            console.error('Error al cargar pedidos procesados:', error);
-            pedidosProcesadosTableBody.innerHTML = `<tr><td colspan="6" style="color:red;">Error al cargar pedidos: ${error.message}</td></tr>`;
-            loadingSpinnerProcesados.style.display = 'none';
-            showMessage(`Error al cargar pedidos procesados: ${error.message}`, 'error');
-        }
-    }
-
-    function renderPedidosProcesados(pedidos) {
-        pedidosProcesadosTableBody.innerHTML = '';
-        pedidos.forEach(pedido => {
-            const totalUsd = parseFloat(pedido.total_usd_detalle); 
-            const formattedTotalUsd = isNaN(totalUsd) ? '0.00' : totalUsd.toFixed(2);
-
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${pedido.id_pedido}</td>
-                <td>${pedido.rut}</td>
-                <td>${new Date(pedido.fecha).toLocaleDateString()}</td>
-                <td><span class="estado-${pedido.estado.toLowerCase()}">${pedido.estado}</span></td>
-                <td>
-                    ${pedido.estado.toLowerCase() === 'procesado' ?
-                        `<button class="btn-enviar" data-id="${pedido.id_pedido}">Marcar como Enviado</button>` :
-                        `<span>${pedido.estado.toLowerCase() === 'enviado' ? 'Ya Enviado' : ''}</span>`
+                fetch(`/api/pedidos/${pedidoId}/marcar-enviado/`, { // URL a tu vista Django
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({}) // Cuerpo vacío es suficiente para POST
+                })
+                .then(response => {
+                    // Manejo de errores de la respuesta HTTP
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
                     }
-                </td>
-            `;
-            pedidosProcesadosTableBody.appendChild(row);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        // Eliminar el pedido de la vista
+                        const pedidoCard = document.getElementById(`pedido-${pedidoId}`);
+                        if (pedidoCard) {
+                            pedidoCard.remove();
+                            // Si no quedan pedidos, mostrar mensaje de "no hay pedidos"
+                            if (document.querySelectorAll('.pedido-card').length === 0) {
+                                const pedidosContainer = document.querySelector('.pedidos-container');
+                                if (pedidosContainer) {
+                                    pedidosContainer.innerHTML = '<div class="no-pedidos"><p>No hay pedidos en estado "Preparado" actualmente.</p></div>';
+                                }
+                            }
+                        }
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al enviar la solicitud:', error);
+                    let errorMessage = error.message || 'Ocurrió un error inesperado.';
+                    // Si el error viene de un JsonResponse con 'errores' (como en Django)
+                    if (error.errores && Array.isArray(error.errores) && error.errores.length > 0) {
+                        errorMessage = error.errores.join('\n');
+                    }
+                    alert('Error: ' + errorMessage);
+                })
+                .finally(() => {
+                    // Volver a habilitar el botón y restaurar el texto original
+                    button.disabled = false;
+                    button.textContent = originalText;
+                });
+            }
         });
-
-        document.querySelectorAll('#pedidosProcesadosTableBody .btn-enviar').forEach(button => {
-            button.addEventListener('click', handleEnviarPedido);
-        });
-    }
-
-    async function handleEnviarPedido(event) {
-        const button = event.target;
-        const pedidoId = button.dataset.id;
-        const originalText = button.textContent;
-        button.disabled = true;
-        button.textContent = 'Enviando...';
-
-        try {
-            const response = await fetch(`${API_URL_BASE}/pedidos/${pedidoId}/enviar`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ estado: 'enviado' })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al enviar el pedido.');
-            }
-
-            const data = await response.json();
-            if (data.success) {
-                await showMessage(data.message || `Pedido ${pedidoId} marcado como Enviado.`, 'success');
-                fetchPedidosProcesados(); 
-                fetchPedidosEnviados(); 
-            } else {
-                showMessage(data.message || `No se pudo enviar el pedido ${pedidoId}.`, 'error');
-            }
-        } catch (error) {
-            console.error('Error al enviar pedido:', error);
-            showMessage(`Error: ${error.message}`, 'error');
-        } finally {
-            button.disabled = false;
-            button.textContent = originalText;
-        }
-    }
-
-    // --- Funciones para Pedidos ENVIADOS ---
-    async function fetchPedidosEnviados() {
-        pedidosEnviadosTableBody.innerHTML = '<tr><td colspan="5">Cargando pedidos enviados...</td></tr>';
-        noPedidosEnviadosMessage.style.display = 'none';
-        loadingSpinnerEnviados.style.display = 'inline-block';
-
-        try {
-            const response = await fetch(`${API_URL_BASE}/pedidos/enviados`); 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al obtener los pedidos enviados.');
-            }
-            const data = await response.json();
-            
-            loadingSpinnerEnviados.style.display = 'none';
-
-            if (data.success && data.pedidos.length > 0) {
-                renderPedidosEnviados(data.pedidos);
-                pedidosEnviadosTableBody.classList.remove('empty-state');
-            } else {
-                pedidosEnviadosTableBody.innerHTML = '';
-                noPedidosEnviadosMessage.style.display = 'block';
-                pedidosEnviadosTableBody.classList.add('empty-state');
-            }
-        } catch (error) {
-            console.error('Error al cargar pedidos enviados:', error);
-            pedidosEnviadosTableBody.innerHTML = `<tr><td colspan="5" style="color:red;">Error al cargar pedidos: ${error.message}</td></tr>`;
-            loadingSpinnerEnviados.style.display = 'none';
-            showMessage(`Error al cargar pedidos enviados: ${error.message}`, 'error');
-        }
-    }
-
-    function renderPedidosEnviados(pedidos) {
-        pedidosEnviadosTableBody.innerHTML = '';
-        pedidos.forEach(pedido => {
-            const totalUsd = parseFloat(pedido.total_usd_detalle); 
-            const formattedTotalUsd = isNaN(totalUsd) ? '0.00' : totalUsd.toFixed(2);
-
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${pedido.id_pedido}</td>
-                <td>${pedido.rut}</td>
-                <td>${new Date(pedido.fecha).toLocaleDateString()}</td>
-                <td><span class="estado-${pedido.estado.toLowerCase()}">${pedido.estado}</span></td>
-            `;
-            pedidosEnviadosTableBody.appendChild(row);
-        });
-    }
-
-    // Cargar AMBOS tipos de pedidos al iniciar la página
-    fetchPedidosProcesados();
-    fetchPedidosEnviados();
+    });
 });

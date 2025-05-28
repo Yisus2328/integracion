@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse #
 from django.views.decorators.csrf import csrf_exempt #
 from django.contrib.auth import authenticate, login #
@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 import requests
 import json #
-from .models import Producto, Cliente
+from .models import Producto, Cliente,DetallePedido,Bodeguero,Pedido,Vendedor
 import os
 
 
@@ -41,10 +41,19 @@ def v_bodeguero(request):
     return render(request, 'v_bodeguero.html')
 
 def v_contador(request):
-    return render(request, 'v_contador.html')
+    pedidos_en_revision = Pedido.objects.filter(estado='En Revision').order_by('-fecha')
+    context = {
+        'pedidos_en_revision': pedidos_en_revision
+    }
+    return render(request, 'v_contador.html', context)
 
 def v_vendedor(request):
-    return render(request, 'v_vendedor.html')
+
+    pedidos_preparados = Pedido.objects.filter(estado='Preparado').order_by('-fecha')
+    context = {
+        'pedidos_preparados': pedidos_preparados
+    }
+    return render(request, 'v_vendedor.html', context)
 
 def panel_ad(request):
     return render(request, 'panel_ad.html')
@@ -66,76 +75,201 @@ def mi_cuenta_cliente(request):
 
 
 
+def cambiar_estado_pedido_a_pagado(request, pedido_id):
+    try:
+        
+        pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
+
+        
+        if pedido.estado == 'En Revision':
+            pedido.estado = 'Pagado'
+            pedido.save()
+            return JsonResponse({'status': 'success', 'message': f'El pedido {pedido_id} ha sido marcado como Pagado.'})
+        else:
+            return JsonResponse({'status': 'error', 'message': f'El pedido {pedido_id} no está en estado "En Revision" para ser marcado como Pagado.'}, status=400)
+
+    except Exception as e:
+        print(f"Error al cambiar el estado del pedido {pedido_id}: {e}")
+        return JsonResponse({'status': 'error', 'message': f'Error interno al procesar la solicitud: {str(e)}'}, status=500)
+
+def marcar_pedido_enviado(request, pedido_id):
+
+    try:
+        pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
+
+        if pedido.estado == 'Preparado':
+            pedido.estado = 'Enviado'
+            pedido.save()
+            return JsonResponse({'status': 'success', 'message': f'Pedido {pedido_id} marcado como Enviado.'})
+        else:
+            return JsonResponse({'status': 'error', 'message': f'El pedido {pedido_id} no está en estado "Preparado" ({pedido.estado}).'}, status=400)
+
+    except Exception as e:
+        print(f"Error al marcar pedido {pedido_id} como Enviado: {e}")
+        return JsonResponse({'status': 'error', 'message': f'Error interno del servidor: {str(e)}'}, status=500)
+
+
+
+
 
 @csrf_exempt
 def guardar_pedido(request):
     if request.method == 'POST':
+        pedido = None
+        data = {} # Diccionario para almacenar los datos parseados
+
         try:
-            data = json.loads(request.body)
-            from .models import Cliente, Vendedor, Bodeguero, Pedido, Producto, DetallePedido
+            # Detecta el tipo de contenido para parsear los datos
+            if request.content_type == 'application/json':
+                data = json.loads(request.body.decode('utf-8'))
+                print(f"DEBUG: Datos JSON parseados (PayPal): {data}")
+                comprobante_archivo = None # Para PayPal, no se espera archivo vía JSON
+            else: # Asume multipart/form-data o application/x-www-form-urlencoded
+                # Para FormData, los datos están en request.POST
+                data = request.POST.copy()
+                print(f"DEBUG: Datos POST estándar (FormData): {data}")
+                comprobante_archivo = request.FILES.get('comprobante') # Archivo solo si es FormData
+                print(f"DEBUG: Archivos recibidos (FormData): {request.FILES}")
 
-            try:
-                cliente_logueado = request.user.cliente_profile 
-            except Cliente.DoesNotExist:
-                return JsonResponse({'status': 'error', 'errores': ['No se encontró perfil de cliente asociado al usuario logueado.']}, status=400)
-
-            vendedor = Vendedor.objects.first() 
-            bodeguero = Bodeguero.objects.first() 
-
-          
-            metodo_pago = data.get('metodo_pago', 'paypal')  
-            if metodo_pago == 'transferencia':
-                estado_pedido = 'En Revision'
-            else:
-                estado_pedido = 'Pagado'
-
-        
-            metodo_envio = data.get('metodo_envio', 'estandar')  
-            if metodo_envio == 'retiro':
-                tipo_entrega = 'retiro en tienda'
-            else:
-                tipo_entrega = 'envío a domicilio'
-
-            try:
-                pedido = Pedido.objects.get(id_pedido=data['pedido_id'])
-            except Pedido.DoesNotExist:
-                pedido = Pedido.objects.create(
-                    id_pedido=data['pedido_id'],
-                    cliente=cliente_logueado, 
-                    vendedor=vendedor,
-                    bodeguero=bodeguero,
-                    estado=estado_pedido,
-                    tipo_entrega=tipo_entrega,
-                    direccion_entrega='', 
-                )
-
-            errores = []
-            for item in data['productos']:
-                try:
-                    producto = Producto.objects.get(id_producto=item['id'])
-                    DetallePedido.crear_detalle(
-                        pedido=pedido,
-                        producto=producto,
-                        cantidad=item['cantidad'],
-                        precio_unitario=producto.precio
-                    )
-                except Producto.DoesNotExist:
-                    errores.append(f"Producto {item['id']} no existe")
-                except Exception as e:
-                    errores.append(str(e))
-
-            if errores:
-                return JsonResponse({'status': 'error', 'errores': errores}, status=400)
-
-            return JsonResponse({'status': 'ok', 'message': 'Pedido guardado exitosamente'})
-
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'errores': ['Formato JSON inválido.']}, status=400)
+        except json.JSONDecodeError as e:
+            print(f"DEBUG: Error al decodificar JSON: {e}")
+            return JsonResponse({'status': 'error', 'errores': [f'Formato de datos JSON inválido: {e}']}, status=400)
         except Exception as e:
-            return JsonResponse({'status': 'error', 'errores': [str(e)]}, status=500)
+            print(f"DEBUG: Error inesperado al leer el cuerpo de la solicitud: {e}")
+            return JsonResponse({'status': 'error', 'errores': [f'Error al procesar la solicitud: {str(e)}']}, status=400)
+
+        # Ahora accede a los datos desde el diccionario 'data'
+        pedido_id = data.get('pedido_id')
+        # --- ¡ESTE ES EL CAMBIO CRÍTICO! ---
+        # Para FormData, los productos vienen como la cadena 'productos_json'.
+        # Para application/json (PayPal), los productos vienen directamente como la lista/diccionario 'productos'.
+        productos_raw = data.get('productos') or data.get('productos_json')
+        # --- FIN DEL CAMBIO CRÍTICO ---
+
+        total_str = data.get('total')
+        metodo_pago = data.get('metodo_pago', 'paypal') # Valor por defecto
+        metodo_envio = data.get('metodo_envio', 'estandar') # Valor por defecto
+        direccion_entrega = data.get('direccion_entrega', '') # Valor por defecto
+
+        # --- DEBUGGING: Imprime los datos recibidos ---
+        print(f"DEBUG: pedido_id: {pedido_id}")
+        print(f"DEBUG: productos_raw (según tipo de envío): {productos_raw}") # Ahora debería tener un valor
+        print(f"DEBUG: total_str (string/float): {total_str}")
+        print(f"DEBUG: metodo_pago: {metodo_pago}")
+        print(f"DEBUG: metodo_envio: {metodo_envio}")
+        print(f"DEBUG: direccion_entrega: {direccion_entrega}")
+        print(f"DEBUG: comprobante_archivo: {comprobante_archivo}")
+        # --- FIN DEBUGGING ---
+
+        # Validar campos esenciales
+        if not pedido_id or not productos_raw or not total_str:
+            return JsonResponse({'status': 'error', 'errores': ['Faltan datos esenciales del pedido (ID, productos o total).']}, status=400)
+
+        # Parsear productos_raw a una lista de diccionarios
+        productos = []
+        try:
+            if isinstance(productos_raw, str):
+                productos = json.loads(productos_raw)
+            else: # Ya es una lista/diccionario si vino directamente de JSON
+                productos = productos_raw
+        except json.JSONDecodeError as e:
+            print(f"DEBUG: Error al parsear productos_raw JSON: {e}")
+            return JsonResponse({'status': 'error', 'errores': [f'Formato de productos inválido: {e}']}, status=400)
+
+        try:
+            total = float(total_str) if isinstance(total_str, str) else float(total_str)
+        except ValueError as e:
+            print(f"DEBUG: Error al convertir total a float: {e}")
+            return JsonResponse({'status': 'error', 'errores': [f'Formato de total inválido: {e}']}, status=400)
+
+        # ... (el resto de tu vista permanece igual) ...
+
+        # 2. Obtener cliente, vendedor y bodeguero
+        try:
+            cliente_logueado = request.user.cliente_profile
+        except (Cliente.DoesNotExist, AttributeError):
+            return JsonResponse({'status': 'error', 'errores': ['Usuario no autenticado o no es un cliente válido para crear un pedido.']}, status=401)
+
+        try:
+            vendedor = Vendedor.objects.first()
+            if not vendedor:
+                return JsonResponse({'status': 'error', 'errores': ['No se encontró ningún Vendedor en la base de datos.']}, status=500)
+        except Exception as e:
+            print(f"DEBUG: Error al obtener el primer Vendedor: {e}")
+            return JsonResponse({'status': 'error', 'errores': [f"Error interno del servidor al buscar Vendedor: {str(e)}"]}, status=500)
+
+        try:
+            bodeguero = Bodeguero.objects.first()
+            if not bodeguero:
+                return JsonResponse({'status': 'error', 'errores': ['No se encontró ningún Bodeguero en la base de datos.']}, status=500)
+        except Exception as e:
+            print(f"DEBUG: Error al obtener el primer Bodeguero: {e}")
+            return JsonResponse({'status': 'error', 'errores': [f"Error interno del servidor al buscar Bodeguero: {str(e)}"]}, status=500)
+            
+        estado_pedido = 'Pagado' # Por defecto para PayPal
+        if metodo_pago == 'transferencia':
+            estado_pedido = 'En Revision'
+        
+        tipo_entrega = 'envío a domicilio'
+        if metodo_envio == 'retiro':
+            tipo_entrega = 'retiro en tienda'
+            
+        # 4. Crear o Actualizar el Pedido
+        try:
+            pedido, created = Pedido.objects.get_or_create(
+                id_pedido=pedido_id,
+                defaults={
+                    'cliente': cliente_logueado,
+                    'vendedor': vendedor,
+                    'bodeguero': bodeguero,
+                    'estado': estado_pedido,
+                    'tipo_entrega': tipo_entrega,
+                    'direccion_entrega': direccion_entrega,
+                    'comprobante_transferencia': comprobante_archivo if metodo_pago == 'transferencia' else None
+                }
+            )
+            if not created:
+                pedido.cliente = cliente_logueado
+                pedido.vendedor = vendedor
+                pedido.bodeguero = bodeguero
+                pedido.estado = estado_pedido
+                pedido.tipo_entrega = tipo_entrega
+                pedido.direccion_entrega = direccion_entrega
+                if metodo_pago == 'transferencia':
+                    pedido.comprobante_transferencia = comprobante_archivo
+                else:
+                    pedido.comprobante_transferencia = None
+                pedido.save()
+
+        except Exception as e:
+            print(f"DEBUG: Error al crear/obtener o actualizar pedido en DB: {type(e).__name__}: {e}")
+            return JsonResponse({'status': 'error', 'errores': [f"Error al crear/obtener o actualizar pedido: {str(e)}"]}, status=500)
+
+        # 5. Crear DetallePedido
+        errores_detalle = []
+        if not created:
+            DetallePedido.objects.filter(pedido=pedido).delete()
+
+        for item in productos:
+            try:
+                producto = Producto.objects.get(id_producto=item['id'])
+                DetallePedido.crear_detalle(
+                    pedido=pedido,
+                    producto=producto,
+                    cantidad=item['cantidad'],
+                    precio_unitario=producto.precio
+                )
+            except Producto.DoesNotExist:
+                errores_detalle.append(f"Producto {item['id']} no existe en la base de datos.")
+            except Exception as e:
+                errores_detalle.append(f"Error al añadir detalle para producto {item['id']}: {str(e)}")
+
+        if errores_detalle:
+            return JsonResponse({'status': 'error', 'errores': errores_detalle}, status=400)
+
+        return JsonResponse({'status': 'ok', 'message': 'Pedido guardado exitosamente (y comprobante si aplica).'})
 
     return JsonResponse({'status': 'error', 'errores': ['Método no permitido']}, status=405)
-
 
 
 @csrf_exempt 
@@ -287,7 +421,7 @@ def get_cliente_data(request): # ¡Ahora esta función obtendrá todo!
                 'fecha': pedido.fecha.strftime('%Y-%m-%d %H:%M'), # Formatear la fecha
                 'estado': pedido.estado,
                 'tipo_entrega': pedido.tipo_entrega,
-                'direccion_entrega': pedido.direccion_entrega, 
+                'direccion_entrega': cliente.direccion, 
                 # Agrega más campos si son relevantes para mostrar
             })
         

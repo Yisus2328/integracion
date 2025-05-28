@@ -1,0 +1,210 @@
+
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #eef2f7;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 40px;
+    font-size: 2.5em;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pedidos-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.pedido-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Alinea los elementos al inicio verticalmente */
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 25px;
+    background-color: #fcfcfc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out;
+}
+
+.pedido-card:hover {
+    transform: translateY(-5px);
+}
+
+.pedido-details {
+    flex: 1; /* Ocupa el espacio disponible */
+    margin-right: 20px;
+}
+
+.pedido-details h2 {
+    color: #3498db;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.6em;
+}
+
+.pedido-details p {
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+.pedido-details strong {
+    color: #555;
+}
+
+.estado-revision {
+    color: #e67e22; /* Naranja para "En Revisión" */
+    font-weight: bold;
+    background-color: #fef3e9;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.comprobante-box {
+    width: 160px; /* Ancho fijo para el cuadro */
+    height: 160px; /* Alto fijo para el cuadro */
+    border: 1px dashed #a7d9f7;
+    background-color: #f7fbff;
+    padding: 10px;
+    text-align: center;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0; /* Evita que se encoja cuando hay mucho texto */
+}
+
+.comprobante-box h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #34495e;
+    font-size: 1em;
+}
+
+.comprobante-box img {
+    max-width: 100%; /* Asegura que la imagen no desborde el cuadro */
+    max-height: 100px; /* Controla el tamaño vertical de la imagen */
+    height: auto; /* Mantiene la proporción */
+    display: block;
+    object-fit: contain; /* Ajusta la imagen dentro del recuadro sin recortar */
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.comprobante-box a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.no-comprobante {
+    color: #888;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.no-pedidos {
+    text-align: center;
+    padding: 40px;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    color: #777;
+    background-color: #fafafa;
+    margin-top: 30px;
+    font-size: 1.1em;
+}
+
+/* Opcional: Estilos para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .pedido-card {
+        flex-direction: column; /* Apila los elementos en pantallas pequeñas */
+        align-items: center;
+    }
+    .pedido-details {
+        margin-right: 0;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .comprobante-box {
+        width: 180px;
+        height: 180px;
+    }
+}
+
+
+.pedido-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Alinea el botón a la derecha */
+    flex-shrink: 0; /* Evita que el botón se encoja */
+}
+
+.btn-marcar-pagado {
+    background-color: #28a745; /* Verde Bootstrap success */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+.btn-marcar-pagado:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el ratón */
+}
+
+/* ... (otras reglas CSS) ... */
+
+/* Ajustes responsive si es necesario para el botón */
+@media (max-width: 768px) {
+    .pedido-card {
+        flex-direction: column;
+        align-items: center;
+    }
+    .pedido-actions {
+        margin-top: 15px;
+        width: 100%;
+        justify-content: center; /* Centra el botón en pantallas pequeñas */
+    }
+}
+
+.header-actions {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.btn-trabajadores {
+    display: inline-block;
+    background-color: #3498db; /* Azul */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    text-decoration: none; /* Quita el subrayado del enlace */
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.btn-trabajadores:hover {
+    background-color: #2980b9; /* Azul más oscuro */
+    transform: translateY(-2px);
+}

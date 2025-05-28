@@ -23,6 +23,8 @@ urlpatterns = [
     path('login_cliente_django/', views.login_cliente_django, name='login_cliente_django'),
     path('logout_cliente/', auth_views.LogoutView.as_view(next_page='/'), name='logout_cliente'),
     path('api/get_cliente_data/', views.get_cliente_data, name='get_cliente_data_api'),
+    path('api/pedidos/<str:pedido_id>/marcar-pagado/', views.cambiar_estado_pedido_a_pagado, name='marcar_pedido_pagado'),
+    path('api/pedidos/<str:pedido_id>/marcar-enviado/', views.marcar_pedido_enviado, name='marcar_pedido_enviado'),
 
 
 ]
