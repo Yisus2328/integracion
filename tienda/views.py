@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse #
 from django.views.decorators.csrf import csrf_exempt #
-from django.contrib.auth import authenticate, login #
-from django.contrib.auth.models import User 
+from django.contrib.auth import authenticate, login 
+from django.contrib.auth.models import User
 from django.conf import settings
+from django.db import transaction
 import requests
 import json #
-from .models import Producto, Cliente,DetallePedido,Bodeguero,Pedido,Vendedor
+from .models import Producto, Cliente,DetallePedido,Bodeguero,Pedido,Vendedor,Administrador
 import os
 
 
@@ -58,8 +59,8 @@ def v_vendedor(request):
 def panel_ad(request):
     return render(request, 'panel_ad.html')
 
-def login_a(request):
-    return render(request, 'login_a.html')
+def login_admin(request):
+    return render(request, 'login_admin.html')
 
 def agregar_e(request):
     return render(request, 'agregar_empleados.html')
@@ -73,7 +74,13 @@ def checkout(request):
 def mi_cuenta_cliente(request):
     return render(request, 'mi_cuenta.html')
 
+def cambio_pass(request):
+    return render(request, 'admin_cambio.html')
 
+
+
+
+##contador
 
 def cambiar_estado_pedido_a_pagado(request, pedido_id):
     try:
@@ -91,6 +98,27 @@ def cambiar_estado_pedido_a_pagado(request, pedido_id):
     except Exception as e:
         print(f"Error al cambiar el estado del pedido {pedido_id}: {e}")
         return JsonResponse({'status': 'error', 'message': f'Error interno al procesar la solicitud: {str(e)}'}, status=500)
+    
+
+def marcar_pedido_rechazado(request):
+
+    pedido_id = request.POST.get('pedido_id')
+    if not pedido_id:
+        return JsonResponse({'status': 'error', 'message': 'ID de pedido no proporcionado.'}, status=400)
+
+    try:
+        pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
+        if pedido.estado == 'En Revision':
+            pedido.estado = 'Rechazado' 
+            pedido.save()
+            return JsonResponse({'status': 'ok', 'message': f'Pedido {pedido_id} marcado como Rechazado.'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'El pedido no está en estado "En Revisión".'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Error al marcar pedido como rechazado: {str(e)}'}, status=500)
+
+
+
 
 def marcar_pedido_enviado(request, pedido_id):
 
@@ -112,6 +140,7 @@ def marcar_pedido_enviado(request, pedido_id):
 
 
 
+##agregar pedido
 @csrf_exempt
 def guardar_pedido(request):
     if request.method == 'POST':
@@ -272,6 +301,7 @@ def guardar_pedido(request):
     return JsonResponse({'status': 'error', 'errores': ['Método no permitido']}, status=405)
 
 
+##agregar producto
 @csrf_exempt 
 def procesar_agregar_producto(request):
     if request.method == 'POST':
@@ -346,7 +376,8 @@ def procesar_agregar_producto(request):
     return JsonResponse({'success': False, 'message': 'Método HTTP no permitido.'}, status=405)
 
 
-
+ 
+##login cliente
 @csrf_exempt 
 def login_cliente_django(request):
     if request.method == 'POST':
@@ -393,7 +424,7 @@ def login_cliente_django(request):
     return JsonResponse({'success': False, 'message': 'Método no permitido.'}, status=405)
 
 
-
+##apartado de "mi_cuenta"
 def get_cliente_data(request): # ¡Ahora esta función obtendrá todo!
     if not request.user.is_authenticated:
         return JsonResponse({'success': False, 'message': 'No autenticado'}, status=401)
@@ -437,3 +468,45 @@ def get_cliente_data(request): # ¡Ahora esta función obtendrá todo!
     except Exception as e:
         print(f"Error en get_cliente_data (clientes y pedidos): {e}") # Mensaje de error más descriptivo
         return JsonResponse({'success': False, 'message': 'Error interno del servidor al obtener datos del cliente y sus pedidos.'}, status=500)
+    
+
+def mi_cuenta(request):
+    if request.method == 'POST':
+        
+        pedido_id = request.POST.get('pedido_id')
+        nuevo_comprobante = request.FILES.get('comprobante_transferencia') 
+
+        if not pedido_id or not nuevo_comprobante:
+            return JsonResponse({'status': 'error', 'message': 'ID de pedido o nuevo comprobante no proporcionado.'}, status=400)
+
+        try:
+            with transaction.atomic(): # Inicia una transacción atómica
+                cliente = request.user.cliente_profile # Aseguramos que el cliente está asociado al usuario
+                pedido = get_object_or_404(Pedido, id_pedido=pedido_id, cliente=cliente) # Verificación de propiedad del pedido
+
+                if pedido.estado == 'Rechazado':
+                    # Opcional: Si quieres borrar el archivo anterior del almacenamiento (FileField lo sobrescribe por defecto)
+                    # if pedido.comprobante_transferencia:
+                    #     pedido.comprobante_transferencia.delete(save=False)
+
+                    pedido.comprobante_transferencia = nuevo_comprobante
+                    pedido.estado = 'En Revision' # Cambiar el estado a "En Revisión"
+                    pedido.save()
+
+                    return JsonResponse({'status': 'ok', 'message': f'Comprobante del pedido {pedido_id} actualizado y estado cambiado a "En Revisión".'})
+                else:
+                    return JsonResponse({'status': 'error', 'message': f'El pedido {pedido_id} no está en estado "Rechazado" y no se puede resubir el comprobante.'}, status=400)
+
+        except Cliente.DoesNotExist:
+             return JsonResponse({'status': 'error', 'message': 'Perfil de cliente no encontrado para este usuario.'}, status=404)
+        except Pedido.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Pedido no encontrado o no pertenece a este cliente.'}, status=404)
+        except Exception as e:
+            print(f"Error al resubir comprobante para pedido {pedido_id}: {e}")
+            return JsonResponse({'status': 'error', 'message': f'Error interno al procesar la solicitud: {str(e)}'}, status=500)
+    
+    return render(request, 'mi_cuenta.html')
+
+
+
+##aparatdo del admin

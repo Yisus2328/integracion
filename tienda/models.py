@@ -47,6 +47,7 @@ class Administrador(models.Model):
     email = models.EmailField(max_length=100)
     contraseña = models.CharField(max_length=100)
     id_sucursal = models.ForeignKey('Sucursal', on_delete=models.CASCADE, db_column='id_sucursal')
+    estado = models.CharField(max_length=100,default="No verificado")
 
     class Meta:
         db_table = 'ADMINISTRADOR'

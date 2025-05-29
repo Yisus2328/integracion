@@ -1,164 +1,342 @@
- /* Estilos básicos para esta página */
-        body { font-family: sans-serif; background-color: #f8f9fa; color: #333; margin: 0; padding: 20px;}
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        h1, h2 { color: #0056b3; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
-        .data-section p { margin-bottom: 10px; font-size: 1.1em;}
-        .data-section span { font-weight: bold; color: #555; display: inline-block; width: 120px;}
-        .data-section p strong { color: #000; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        .message {
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-        .message-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .message-info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+/* tu_app/static/css/mi_cuenta.css */
 
 body {
-    margin: 0; /* Asegura que no haya márgenes alrededor del body */
-    padding: 0; /* Asegura que no haya padding alrededor del body */
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5; /* Un fondo claro general para la página */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
 }
 
-/* --- Estilos para la barra superior --- */
+/* --- Top Bar / Header --- */
 .top-bar {
-    background-color: #343a40; /* Color oscuro similar a tu barra lateral anterior */
-    color: white;
-    padding: 15px 0; /* Padding vertical, sin padding horizontal aquí */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombra sutil debajo */
-    display: flex;
-    justify-content: center; /* Centra el contenido (top-bar-content) */
-    align-items: center;
-    width: 100%; /* Asegura que la barra ocupe todo el ancho disponible */
-    box-sizing: border-box; /* Incluye padding en el ancho total */
-    /* !QUITAR ESTO SI EXISTE! margin-left: auto; margin-right: auto; max-width: ... */
+    background-color: #ffffff; /* Un azul oscuro, tipo azul naval o medianoche */
+    color: white; /* Aseguramos que el texto principal de la barra sea blanco */
+    padding: 15px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra un poco más pronunciada */
 }
 
 .top-bar-content {
-    max-width: 1200px; /* Ancho máximo para el contenido dentro de la barra (ej: 1200px) */
-    width: 100%; /* HACER QUE OCUPE EL 100% DEL max-width */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px; /* AÑADIR UN PEQUEÑO PADDING HORIZONTAL INTERNO PARA EL CONTENIDO */
-    box-sizing: border-box; /* Asegura que el padding se incluya en el 100% */
 }
 
 .app-title {
     margin: 0;
     font-size: 1.8em;
-    color: #f8f9fa;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-weight: 600;
+    /* color: white; <-- Ya está heredado del .top-bar, pero se puede poner explícito */
 }
 
 .home-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 18px;
-    text-decoration: none;
+    background-color: #007bff; /* Un azul más vibrante para el botón */
+    color: white; /* Texto blanco en el botón */
+    padding: 6px 12px; /* Reducido de 8px 15px */
     border-radius: 5px;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-    white-space: nowrap;
+    text-decoration: none;
+    font-size: 0.8em; /* Reducido de 0.9em */
+    font-weight: bold; /* Letras un poco más resaltadas */
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.7); /* Un sutil resaltado blanco para el texto */
+    transition: background-color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .home-button:hover {
-    background-color: #0056b3;
+    background-color: #0056b3; /* Un azul un poco más oscuro al pasar el ratón */
+    text-shadow: 0 0 8px rgba(255, 255, 255, 1); /* Más resaltado al pasar el ratón */
 }
 
+/* --- Main Content --- */
+.main-content {
+    padding: 30px 0;
+}
 
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
 
-
-/* Estilos existentes para el contenido, mensajes, tablas, etc. */
 h1 {
-    color: #343a40;
     text-align: center;
+    color: #0056b3;
     margin-bottom: 30px;
+    font-size: 2.2em;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 h2 {
-    color: #495057;
-    margin-top: 25px;
-    margin-bottom: 15px;
+    color: #34495e;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-size: 1.8em;
     border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
+    padding-bottom: 8px;
 }
 
+/* --- Data Sections (Personal Data) --- */
 .data-section p {
-    margin: 8px 0;
+    margin: 10px 0;
+    font-size: 1.05em;
 }
 
 .data-section span {
-    font-weight: bold;
-    color: #666;
+    font-weight: 600;
+    color: #555;
     display: inline-block;
-    width: 100px;
+    width: 120px; /* Ancho fijo para las etiquetas */
 }
 
-table {
+/* --- Orders Table --- */
+#ordersSection {
+    margin-top: 30px;
+}
+
+#ordersTable {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Para que los bordes redondeados se apliquen a la tabla */
 }
 
-th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
+#ordersTable thead tr {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+#ordersTable th, #ordersTable td {
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
     text-align: left;
+    vertical-align: middle;
 }
 
-th {
-    background-color: #007bff;
-    color: white;
+#ordersTable tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
 }
 
-tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
+#ordersTable tbody tr:hover {
+    background-color: #e2f2ff;
 }
 
-.message {
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 5px;
+/* ELIMINADO: Comprobante Column Styles
+#ordersTable td:nth-child(6) { 
     text-align: center;
 }
 
+.comprobante-preview {
+    max-width: 70px; 
+    max-height: 70px;
+    object-fit: contain;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto; 
+    transition: transform 0.2s ease;
+}
+
+.comprobante-preview:hover {
+    transform: scale(1.05);
+}
+*/
+
+/* --- Action Buttons & Forms --- */
+.btn-resubir {
+    background-color: #ffc107; /* Amarillo/Naranja */
+    color: #333;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Ocupa todo el ancho disponible en la celda */
+    box-sizing: border-box;
+}
+
+.btn-resubir:hover {
+    background-color: #e0a800;
+}
+
+.form-resubir {
+    margin-top: 5px; /* Pequeño margen superior */
+    padding: 8px;
+    border: 1px solid #b3daff; /* Borde azul claro */
+    border-radius: 5px;
+    background-color: #e6f7ff; /* Fondo azul muy claro */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-resubir input[type="file"] {
+    display: block;
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #a7d9f7;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+.form-resubir button {
+    padding: 8px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.form-resubir .btn-subir {
+    background-color: #28a745; /* Verde */
+    color: white;
+    margin-right: 5px; /* Espacio entre los botones */
+}
+
+.form-resubir .btn-subir:hover {
+    background-color: #218838;
+}
+
+.form-resubir .btn-cancelar {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+}
+
+.form-resubir .btn-cancelar:hover {
+    background-color: #c82333;
+}
+
+/* --- Messages --- */
+.message {
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.05em;
+    display: none; /* Oculto por defecto */
+}
+
 .message-info {
-    background-color: #e7f3fe;
-    color: #004085;
-    border: 1px solid #b8daff;
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
 }
 
 .message-error {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+/* Mensajes de subida específicos del formulario */
+.upload-message {
+    margin-top: 5px;
+    padding: 5px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    font-weight: normal;
+    text-align: center;
+    display: none;
+}
+.upload-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.upload-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .top-bar-content {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .app-title {
+        font-size: 1.5em;
+    }
+    .home-button {
+        width: 100%;
+        text-align: center;
+    }
+    .container {
+        padding: 20px;
+        margin: 20px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    h2 {
+        font-size: 1.5em;
+    }
+    .data-section span {
+        width: 90px;
+    }
+    #ordersTable, #ordersTable tbody, #ordersTable tr, #ordersTable td, #ordersTable th {
+        display: block;
+    }
+    #ordersTable thead {
+        display: none; /* Oculta el encabezado de la tabla en móviles */
+    }
+    #ordersTable tr {
+        margin-bottom: 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    #ordersTable td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+    #ordersTable td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        text-align: left;
+        font-weight: bold;
+        color: #555;
+    }
+    /* Asigna data-label en JS para cada celda */
+    #ordersTable td:nth-child(1)::before { content: "ID Pedido:"; }
+    #ordersTable td:nth-child(2)::before { content: "Fecha:"; }
+    #ordersTable td:nth-child(3)::before { content: "Estado:"; }
+    #ordersTable td:nth-child(4)::before { content: "Tipo Entrega:"; }
+    #ordersTable td:nth-child(5)::before { content: "Dirección:"; }
+    #ordersTable td:nth-child(6)::before { content: "Acciones:"; }
+
+    /* ELIMINADO: .comprobante-preview responsive styles
+    .comprobante-preview {
+        max-width: 100px; 
+        max-height: 100px;
+    }
+    */
+    .btn-resubir {
+        margin-top: 10px;
+    }
+    .form-resubir {
+        margin-top: 10px;
+    }
 }

@@ -10,9 +10,9 @@
 <body>
     <h1>PEDIDOS EN REVISIÓN</h1>
 
-
     <div class="pedidos-container">
-        {% csrf_token %}
+        {# El CSRF token se puede colocar aquí para que el JS lo encuentre #}
+        {% csrf_token %} 
 
         {% if pedidos_en_revision %}
             {% for pedido in pedidos_en_revision %}
@@ -28,19 +28,25 @@
                         {% endif %}
                         <p><strong>Vendedor:</strong> {{ pedido.vendedor.nombre }}</p>
                         <p><strong>Bodeguero:</strong> {{ pedido.bodeguero.nombre }}</p>
+
+                        {# Contenedor para mensajes de estado específico del pedido #}
+                        <div class="status-message" id="message-{{ pedido.id_pedido }}"></div>
                     </div>
                     <div class="comprobante-box">
                         <h3>Comprobante</h3>
                         {% if pedido.comprobante_transferencia %}
                             <a href="{{ pedido.comprobante_transferencia.url }}" target="_blank" title="Ver comprobante en tamaño completo">
-                                <img src="{{ pedido.comprobante_transferencia.url }}" alt="Comprobante de Transferencia del Pedido {{ pedido.id_pedido }}">
+                                <img src="{{ pedido.comprobante_transferencia.url }}" alt="Comprobante de Transferencia del Pedido {{ pedido.id_pedido }}" class="comprobante-img-preview">
                             </a>
                         {% else %}
                             <p class="no-comprobante">Sin comprobante adjunto</p>
                         {% endif %}
                     </div>
                     <div class="pedido-actions">
-                        <button class="btn-marcar-pagado" data-pedido-id="{{ pedido.id_pedido }}">Marcar como Pagado</button>
+                        {# Asegúrate de que la clase sea 'btn-pagado' como en el JS que te di #}
+                        <button class="btn-pagado" data-pedido-id="{{ pedido.id_pedido }}">Marcar como Pagado</button>
+                        {# ¡NUEVO: Botón para rechazar! Clase 'btn-rechazado' #}
+                        <button class="btn-rechazado" data-pedido-id="{{ pedido.id_pedido }}">Marcar como Rechazado</button>
                     </div>
                 </div>
             {% endfor %}
@@ -52,11 +58,9 @@
     </div>
 
     <p></p>
-        {# **NUEVO: Botón de redirección** #}
     <div class="header-actions">
         <a href="{% url 'login_t' %}" class="btn-trabajadores">Ir al Espacio de Trabajadores</a>
     </div>
-
 
     <script src="{% static 'js/contador.js' %}"></script>
 </body>
