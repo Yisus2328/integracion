@@ -170,12 +170,13 @@ def guardar_pedido(request):
         # Ahora accede a los datos desde el diccionario 'data'
         pedido_id = data.get('pedido_id')
         # --- ¡ESTE ES EL CAMBIO CRÍTICO! ---
-        # Para FormData, los productos vienen como la cadena 'productos_json'.
-        # Para application/json (PayPal), los productos vienen directamente como la lista/diccionario 'productos'.
         productos_raw = data.get('productos') or data.get('productos_json')
         # --- FIN DEL CAMBIO CRÍTICO ---
 
-        total_str = data.get('total')
+        # Cambia esta línea:
+        # total_str = data.get('total')
+        # Por esto:
+        total_str = data.get('total') or data.get('total_a_pagar')
         metodo_pago = data.get('metodo_pago', 'paypal') # Valor por defecto
         metodo_envio = data.get('metodo_envio', 'estandar') # Valor por defecto
         direccion_entrega = data.get('direccion_entrega', '') # Valor por defecto
@@ -254,7 +255,8 @@ def guardar_pedido(request):
                     'estado': estado_pedido,
                     'tipo_entrega': tipo_entrega,
                     'direccion_entrega': direccion_entrega,
-                    'comprobante_transferencia': comprobante_archivo if metodo_pago == 'transferencia' else None
+                    'comprobante_transferencia': comprobante_archivo if metodo_pago == 'transferencia' else None,
+                    'total': total  # Guarda el total del carrito aquí
                 }
             )
             if not created:
@@ -264,6 +266,7 @@ def guardar_pedido(request):
                 pedido.estado = estado_pedido
                 pedido.tipo_entrega = tipo_entrega
                 pedido.direccion_entrega = direccion_entrega
+                pedido.total = total  # Actualiza el total aquí también
                 if metodo_pago == 'transferencia':
                     pedido.comprobante_transferencia = comprobante_archivo
                 else:
@@ -452,7 +455,8 @@ def get_cliente_data(request): # ¡Ahora esta función obtendrá todo!
                 'fecha': pedido.fecha.strftime('%Y-%m-%d %H:%M'), # Formatear la fecha
                 'estado': pedido.estado,
                 'tipo_entrega': pedido.tipo_entrega,
-                'direccion_entrega': cliente.direccion, 
+                'direccion_entrega': cliente.direccion,
+                'total': pedido.total,  # <-- AGREGA ESTA LÍNEA
                 # Agrega más campos si son relevantes para mostrar
             })
         

@@ -53,6 +53,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('clienteEmail').textContent = cliente.email || 'N/A';
                 document.getElementById('clienteTelefono').textContent = cliente.telefono || 'N/A';
                 document.getElementById('clienteDireccion').textContent = cliente.direccion || 'N/A';
+
+            
                 
                 // --- Cargar Pedidos del Cliente ---
                 const pedidos = data.pedidos;
@@ -67,7 +69,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         row.insertCell(2).textContent = pedido.estado;
                         row.insertCell(3).textContent = pedido.tipo_entrega;
                         row.insertCell(4).textContent = pedido.direccion_entrega;
-
+                        row.insertCell(5).textContent = (pedido.total !== undefined && pedido.total !== null)
+    ? `$${Number(pedido.total).toFixed(2)}`
+    : 'N/A'; // Columna del total con formato USD
                         // ELIMINADO: Columna del Comprobante (originalmente row.insertCell(5))
                         // const comprobanteCell = row.insertCell(5);
                         // if (pedido.comprobante_url) {
@@ -85,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // }
                         
                         // Columna de Acciones (ahora será row.insertCell(5) en lugar de row.insertCell(6))
-                        const accionesCell = row.insertCell(5); // EL ÍNDICE HA CAMBIADO
+                        const accionesCell = row.insertCell(6); // EL ÍNDICE HA CAMBIADO
                         if (pedido.estado === 'Rechazado') {
                             const resubirButton = document.createElement('button');
                             resubirButton.textContent = 'Resubir Comprobante';

@@ -96,6 +96,7 @@ class Pedido(models.Model):
     estado = models.CharField(max_length=15)
     tipo_entrega = models.CharField(max_length=35)
     direccion_entrega = models.CharField(max_length=50, null=True, blank=True)
+    total = models.IntegerField(default=0)
 
     comprobante_transferencia = models.FileField(upload_to='comprobantes_transferencia/', blank=True, null=True)
 
