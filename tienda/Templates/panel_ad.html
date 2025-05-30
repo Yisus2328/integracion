@@ -18,10 +18,12 @@
     <ul class="sidebar-menu">
         <li><a href="{% url 'home' %}"><i class="fa fa-home"></i> Panel Principal</a></li>
         <li><a href="{% url 'agregar_empleado' %}"><i class="fa fa-user-plus"></i> Agregar Empleado</a></li>
+        <li><a href="{% url 'listar_empleados' %}"><i class="fa fa-users"></i> Gestionar empleados</a></li> 
         <li><a href="{% url 'listar_productos' %}"><i class="fa fa-box"></i> Productos</a></li>
         <li><a href="{% url 'formulario_agregar_producto' %}"><i class="fa fa-plus-square"></i> Agregar Producto</a></li>
         <li><a href="#"><i class="fa fa-clipboard-list"></i> Pedidos</a></li>
         <li><a href="#"><i class="fa fa-cogs"></i> Configuración</a></li>
+        <li><a href="{% url 'home' %}"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a></li> 
     </ul>
 </div>
 

@@ -43,6 +43,7 @@ class Producto(models.Model):
 
 class Administrador(models.Model):
     id_admin = models.CharField(max_length=10, primary_key=True)
+    rut = models.CharField(max_length=12)
     nombre = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
     contraseña = models.CharField(max_length=100)

@@ -7,7 +7,7 @@ from django.conf import settings
 from django.db import transaction
 import requests
 import json #
-from .models import Producto, Cliente,DetallePedido,Bodeguero,Pedido,Vendedor,Administrador
+from .models import Producto, Cliente,DetallePedido,Bodeguero,Pedido,Vendedor,Administrador,Contador
 import os
 
 
@@ -77,6 +77,9 @@ def mi_cuenta_cliente(request):
 def cambio_pass(request):
     return render(request, 'admin_cambio.html')
 
+def listar_empleados(request):
+    return render(request, 'listar_empleados.html')
+
 
 
 
@@ -145,19 +148,18 @@ def marcar_pedido_enviado(request, pedido_id):
 def guardar_pedido(request):
     if request.method == 'POST':
         pedido = None
-        data = {} # Diccionario para almacenar los datos parseados
+        data = {} 
 
         try:
-            # Detecta el tipo de contenido para parsear los datos
+            
             if request.content_type == 'application/json':
                 data = json.loads(request.body.decode('utf-8'))
                 print(f"DEBUG: Datos JSON parseados (PayPal): {data}")
-                comprobante_archivo = None # Para PayPal, no se espera archivo vía JSON
-            else: # Asume multipart/form-data o application/x-www-form-urlencoded
-                # Para FormData, los datos están en request.POST
+                comprobante_archivo = None 
+            else: 
                 data = request.POST.copy()
                 print(f"DEBUG: Datos POST estándar (FormData): {data}")
-                comprobante_archivo = request.FILES.get('comprobante') # Archivo solo si es FormData
+                comprobante_archivo = request.FILES.get('comprobante') 
                 print(f"DEBUG: Archivos recibidos (FormData): {request.FILES}")
 
         except json.JSONDecodeError as e:
@@ -167,40 +169,35 @@ def guardar_pedido(request):
             print(f"DEBUG: Error inesperado al leer el cuerpo de la solicitud: {e}")
             return JsonResponse({'status': 'error', 'errores': [f'Error al procesar la solicitud: {str(e)}']}, status=400)
 
-        # Ahora accede a los datos desde el diccionario 'data'
+
         pedido_id = data.get('pedido_id')
-        # --- ¡ESTE ES EL CAMBIO CRÍTICO! ---
+
         productos_raw = data.get('productos') or data.get('productos_json')
-        # --- FIN DEL CAMBIO CRÍTICO ---
 
-        # Cambia esta línea:
-        # total_str = data.get('total')
-        # Por esto:
         total_str = data.get('total') or data.get('total_a_pagar')
-        metodo_pago = data.get('metodo_pago', 'paypal') # Valor por defecto
-        metodo_envio = data.get('metodo_envio', 'estandar') # Valor por defecto
-        direccion_entrega = data.get('direccion_entrega', '') # Valor por defecto
+        metodo_pago = data.get('metodo_pago', 'paypal') 
+        metodo_envio = data.get('metodo_envio', 'estandar') 
+        direccion_entrega = data.get('direccion_entrega', '') 
 
-        # --- DEBUGGING: Imprime los datos recibidos ---
+
         print(f"DEBUG: pedido_id: {pedido_id}")
-        print(f"DEBUG: productos_raw (según tipo de envío): {productos_raw}") # Ahora debería tener un valor
+        print(f"DEBUG: productos_raw (según tipo de envío): {productos_raw}") 
         print(f"DEBUG: total_str (string/float): {total_str}")
         print(f"DEBUG: metodo_pago: {metodo_pago}")
         print(f"DEBUG: metodo_envio: {metodo_envio}")
         print(f"DEBUG: direccion_entrega: {direccion_entrega}")
         print(f"DEBUG: comprobante_archivo: {comprobante_archivo}")
-        # --- FIN DEBUGGING ---
 
-        # Validar campos esenciales
+
         if not pedido_id or not productos_raw or not total_str:
             return JsonResponse({'status': 'error', 'errores': ['Faltan datos esenciales del pedido (ID, productos o total).']}, status=400)
 
-        # Parsear productos_raw a una lista de diccionarios
+        
         productos = []
         try:
             if isinstance(productos_raw, str):
                 productos = json.loads(productos_raw)
-            else: # Ya es una lista/diccionario si vino directamente de JSON
+            else: 
                 productos = productos_raw
         except json.JSONDecodeError as e:
             print(f"DEBUG: Error al parsear productos_raw JSON: {e}")
@@ -212,9 +209,7 @@ def guardar_pedido(request):
             print(f"DEBUG: Error al convertir total a float: {e}")
             return JsonResponse({'status': 'error', 'errores': [f'Formato de total inválido: {e}']}, status=400)
 
-        # ... (el resto de tu vista permanece igual) ...
 
-        # 2. Obtener cliente, vendedor y bodeguero
         try:
             cliente_logueado = request.user.cliente_profile
         except (Cliente.DoesNotExist, AttributeError):
@@ -256,7 +251,7 @@ def guardar_pedido(request):
                     'tipo_entrega': tipo_entrega,
                     'direccion_entrega': direccion_entrega,
                     'comprobante_transferencia': comprobante_archivo if metodo_pago == 'transferencia' else None,
-                    'total': total  # Guarda el total del carrito aquí
+                    'total': total  
                 }
             )
             if not created:
@@ -266,7 +261,7 @@ def guardar_pedido(request):
                 pedido.estado = estado_pedido
                 pedido.tipo_entrega = tipo_entrega
                 pedido.direccion_entrega = direccion_entrega
-                pedido.total = total  # Actualiza el total aquí también
+                pedido.total = total  
                 if metodo_pago == 'transferencia':
                     pedido.comprobante_transferencia = comprobante_archivo
                 else:
@@ -456,8 +451,7 @@ def get_cliente_data(request): # ¡Ahora esta función obtendrá todo!
                 'estado': pedido.estado,
                 'tipo_entrega': pedido.tipo_entrega,
                 'direccion_entrega': cliente.direccion,
-                'total': pedido.total,  # <-- AGREGA ESTA LÍNEA
-                # Agrega más campos si son relevantes para mostrar
+                'total': pedido.total,  
             })
         
         # 3. Combinar los datos del cliente y los pedidos en una única respuesta JSON
@@ -489,9 +483,7 @@ def mi_cuenta(request):
                 pedido = get_object_or_404(Pedido, id_pedido=pedido_id, cliente=cliente) # Verificación de propiedad del pedido
 
                 if pedido.estado == 'Rechazado':
-                    # Opcional: Si quieres borrar el archivo anterior del almacenamiento (FileField lo sobrescribe por defecto)
-                    # if pedido.comprobante_transferencia:
-                    #     pedido.comprobante_transferencia.delete(save=False)
+
 
                     pedido.comprobante_transferencia = nuevo_comprobante
                     pedido.estado = 'En Revision' # Cambiar el estado a "En Revisión"
@@ -512,5 +504,64 @@ def mi_cuenta(request):
     return render(request, 'mi_cuenta.html')
 
 
+##metodos empleados
 
-##aparatdo del admin
+def listar_todos_los_empleados_manual(request):
+    """
+    Lista todos los empleados de todos los tipos (Vendedor, Bodeguero, Contador)
+    en un formato unificado usando serialización manual con JsonResponse.
+    """
+
+    all_employees_data = []
+
+    try:
+        # Obtener y serializar vendedores
+        vendedores = Vendedor.objects.select_related('id_sucursal').all()
+        for vendedor in vendedores:
+            all_employees_data.append({
+                'id': vendedor.id_vendedor, # Usar 'id' genérico
+                'rut': vendedor.rut,
+                'nombre': vendedor.nombre,
+                'email': vendedor.email,
+                'id_sucursal': vendedor.id_sucursal.id_sucursal, # Acceder al ID de la sucursal
+                'nombre_sucursal': vendedor.id_sucursal.nombre, # Si quieres el nombre de la sucursal
+                'tipo': 'vendedor'
+            })
+
+        # Obtener y serializar bodegueros
+        bodegueros = Bodeguero.objects.select_related('id_sucursal').all()
+        for bodeguero in bodegueros:
+            all_employees_data.append({
+                'id': bodeguero.id_bodeguero,
+                'rut': bodeguero.rut,
+                'nombre': bodeguero.nombre,
+                'email': bodeguero.email,
+                'id_sucursal': bodeguero.id_sucursal.id_sucursal,
+                'nombre_sucursal': bodeguero.id_sucursal.nombre,
+                'tipo': 'bodeguero'
+            })
+
+        # Obtener y serializar contadores
+        contadores = Contador.objects.select_related('id_sucursal').all()
+        for contador in contadores:
+            all_employees_data.append({
+                'id': contador.id_contador,
+                'rut': contador.rut,
+                'nombre': contador.nombre,
+                'email': contador.email,
+                'id_sucursal': contador.id_sucursal.id_sucursal,
+                'nombre_sucursal': contador.id_sucursal.nombre,
+                'tipo': 'contador'
+            })
+
+        # Opcional: ordenar la lista combinada si lo necesitas
+        # all_employees_data.sort(key=lambda x: x['nombre'])
+
+        return JsonResponse({
+            'success': True,
+            'empleados': all_employees_data
+        })
+
+    except Exception as e:
+        print(f"Error en listar_todos_los_empleados_manual: {e}")
+        return JsonResponse({'success': False, 'message': 'Error interno del servidor al obtener datos de empleados.'}, status=500)

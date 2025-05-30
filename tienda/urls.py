@@ -17,8 +17,10 @@ urlpatterns = [
     path('login_admin/', views.login_admin, name='login_admin'),
     path('admin_cambio/', views.cambio_pass, name='admin_cambio'),
     path('agregar_empleado/', views.agregar_e, name='agregar_empleado'),
+    path('listar_empleados/', views.listar_empleados, name='listar_empleados'),
     path('guardar_pedido/', views.guardar_pedido, name='guardar_pedido'),
     path('mi_cuenta/', views.mi_cuenta_cliente, name='mi_cuenta_cliente'),
+
 
     path('producto/procesar_agregar/', views.procesar_agregar_producto, name='procesar_agregar_producto'),     
     path('login_cliente_django/', views.login_cliente_django, name='login_cliente_django'),
@@ -28,6 +30,7 @@ urlpatterns = [
     path('api/pedidos/marcar-rechazado/', views.marcar_pedido_rechazado, name='marcar_pedido_rechazado'),
     path('api/pedidos/<str:pedido_id>/marcar-enviado/', views.marcar_pedido_enviado, name='marcar_pedido_enviado'),
     path('mi-cuenta/', views.mi_cuenta, name='mi_cuenta'),
+    path('empleados_todos_manual/', views.listar_todos_los_empleados_manual, name='listar_todos_los_empleados_manual'),
 
 
 
