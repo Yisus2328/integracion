@@ -7,7 +7,7 @@ from django.conf import settings
 from django.db import transaction
 import requests
 import json #
-from .models import Producto, Cliente,DetallePedido,Bodeguero,Pedido,Vendedor,Administrador,Contador
+from .models import Producto, Cliente,DetallePedido,Bodeguero,Pedido,Vendedor,Administrador,Contador,Sucursal
 import os
 
 
@@ -507,10 +507,6 @@ def mi_cuenta(request):
 ##metodos empleados
 
 def listar_todos_los_empleados_manual(request):
-    """
-    Lista todos los empleados de todos los tipos (Vendedor, Bodeguero, Contador)
-    en un formato unificado usando serialización manual con JsonResponse.
-    """
 
     all_employees_data = []
 
@@ -554,8 +550,6 @@ def listar_todos_los_empleados_manual(request):
                 'tipo': 'contador'
             })
 
-        # Opcional: ordenar la lista combinada si lo necesitas
-        # all_employees_data.sort(key=lambda x: x['nombre'])
 
         return JsonResponse({
             'success': True,
@@ -565,3 +559,115 @@ def listar_todos_los_empleados_manual(request):
     except Exception as e:
         print(f"Error en listar_todos_los_empleados_manual: {e}")
         return JsonResponse({'success': False, 'message': 'Error interno del servidor al obtener datos de empleados.'}, status=500)
+
+
+@csrf_exempt
+def actualizar_empleado(request, tipo_empleado, empleado_id):
+    """
+    Actualiza el nombre, email y el id_sucursal de un empleado específico.
+    Se espera un método PUT/PATCH con un JSON en el cuerpo.
+    Ejemplo de JSON: {"nombre": "Nuevo Nombre", "email": "nuevo@ejemplo.com", "id_sucursal": "S002"}
+    """
+    if request.method not in ['PUT', 'PATCH']:
+        return JsonResponse({'success': False, 'message': 'Método no permitido.'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        nuevo_nombre = data.get('nombre')
+        nuevo_email = data.get('email')
+        nueva_id_sucursal = data.get('id_sucursal') # Este es el ID de la nueva sucursal
+
+        # 1. Validar que al menos uno de los campos se proporciona para actualizar
+        if not any([nuevo_nombre, nuevo_email, nueva_id_sucursal]):
+             return JsonResponse({'success': False, 'message': 'Se debe proporcionar al menos nombre, email o id_sucursal para actualizar.'}, status=400)
+
+
+        # 2. Identificar el Modelo del Empleado y buscarlo
+        modelo_empleado = None
+        if tipo_empleado == 'vendedor':
+            modelo_empleado = Vendedor
+        elif tipo_empleado == 'bodeguero':
+            modelo_empleado = Bodeguero
+        elif tipo_empleado == 'contador':
+            modelo_empleado = Contador
+        else:
+            return JsonResponse({'success': False, 'message': 'Tipo de empleado no válido.'}, status=400)
+
+        try:
+            empleado = modelo_empleado.objects.get(pk=empleado_id)
+        except modelo_empleado.DoesNotExist:
+            return JsonResponse({'success': False, 'message': f'{tipo_empleado.capitalize()} con ID {empleado_id} no encontrado.'}, status=404)
+
+        # 3. Preparar la actualización dentro de una transacción
+        with transaction.atomic():
+            if nuevo_nombre:
+                empleado.nombre = nuevo_nombre
+            if nuevo_email:
+                empleado.email = nuevo_email
+
+            if nueva_id_sucursal:
+                try:
+                    # Buscamos la nueva sucursal por su ID
+                    nueva_sucursal_obj = Sucursal.objects.get(id_sucursal=nueva_id_sucursal)
+                    empleado.id_sucursal = nueva_sucursal_obj # Asignamos el objeto Sucursal
+                except Sucursal.DoesNotExist:
+                    return JsonResponse({'success': False, 'message': f'ID de sucursal {nueva_id_sucursal} no encontrada. No se puede actualizar.'}, status=400)
+            
+            empleado.save()
+
+        # 4. Respuesta Exitosa
+        return JsonResponse({
+            'success': True,
+            'message': f'{tipo_empleado.capitalize()} {empleado_id} actualizado exitosamente.',
+            'empleado_actualizado': {
+                'id': empleado_id,
+                'tipo': tipo_empleado,
+                'nombre': empleado.nombre,
+                'email': empleado.email,
+                'id_sucursal': empleado.id_sucursal.id_sucursal,
+                'nombre_sucursal': empleado.id_sucursal.nombre # Retornamos el nombre real de la sucursal asignada
+            }
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Cuerpo de la petición JSON inválido.'}, status=400)
+    except Exception as e:
+        print(f"Error al actualizar empleado {tipo_empleado} {empleado_id}: {e}")
+        return JsonResponse({'success': False, 'message': f'Error interno del servidor al actualizar el {tipo_empleado}.'}, status=500)
+    
+@csrf_exempt # Advertencia: Deshabilita la protección CSRF para esta vista.
+def eliminar_empleado(request, tipo_empleado, empleado_id):
+
+    if request.method != 'DELETE':
+        return JsonResponse({'success': False, 'message': 'Método no permitido.'}, status=405)
+
+    try:
+        # 1. Identificar el Modelo del Empleado
+        modelo_empleado = None
+        if tipo_empleado == 'vendedor':
+            modelo_empleado = Vendedor
+        elif tipo_empleado == 'bodeguero':
+            modelo_empleado = Bodeguero
+        elif tipo_empleado == 'contador':
+            modelo_empleado = Contador
+        else:
+            return JsonResponse({'success': False, 'message': 'Tipo de empleado no válido.'}, status=400)
+
+        # 2. Buscar y Eliminar el Empleado dentro de una transacción
+        with transaction.atomic():
+            try:
+                empleado = modelo_empleado.objects.get(pk=empleado_id)
+                empleado_nombre = empleado.nombre # Guardar el nombre antes de eliminar
+                empleado.delete()
+            except modelo_empleado.DoesNotExist:
+                return JsonResponse({'success': False, 'message': f'{tipo_empleado.capitalize()} con ID {empleado_id} no encontrado.'}, status=404)
+
+        # 3. Respuesta Exitosa
+        return JsonResponse({
+            'success': True,
+            'message': f'{tipo_empleado.capitalize()} "{empleado_nombre}" (ID: {empleado_id}) eliminado exitosamente.'
+        })
+
+    except Exception as e:
+        print(f"Error al eliminar empleado {tipo_empleado} {empleado_id}: {e}")
+        return JsonResponse({'success': False, 'message': f'Error interno del servidor al eliminar el {tipo_empleado}.'}, status=500)

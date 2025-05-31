@@ -31,6 +31,9 @@ urlpatterns = [
     path('api/pedidos/<str:pedido_id>/marcar-enviado/', views.marcar_pedido_enviado, name='marcar_pedido_enviado'),
     path('mi-cuenta/', views.mi_cuenta, name='mi_cuenta'),
     path('empleados_todos_manual/', views.listar_todos_los_empleados_manual, name='listar_todos_los_empleados_manual'),
+    path('empleados/<str:tipo_empleado>/<str:empleado_id>/actualizar/', views.actualizar_empleado, name='actualizar_empleado'),
+    path('empleados/<str:tipo_empleado>/<str:empleado_id>/eliminar/', views.eliminar_empleado, name='eliminar_empleado'),   
+
 
 
 
