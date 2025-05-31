@@ -9,17 +9,16 @@
 </head>
 <body>
     <div class="form-container sign-in-container">
-        <form id="trabajadorLoginForm"> {# Cambiado ID del formulario para mayor claridad #}
+        <form id="trabajadorLoginForm">
             <h1>Inicio sesión - Trabajadores</h1>
             <span>Por favor, ingresa con tus credenciales de trabajador.</span>
             <p></p>
-            <input type="text" placeholder="ID de Trabajador (Ej: CO01)" name="trabajador_id" id="trabajador_id" required />
-            <input type="email" placeholder="Email" name="trabajador_email" id="trabajador_email" required /> {# Nuevo campo #}
-            <input type="password" placeholder="Contraseña" name="trabajador_password" id="trabajador_password" required /> {# Nuevo campo #}
+            <input type="email" placeholder="Email" name="trabajador_email" id="trabajador_email" required />
+            <input type="password" placeholder="Contraseña" name="trabajador_password" id="trabajador_password" required />
             <p></p>
             <button type="button" onclick="iniciarSesionTrabajador()">Entrar</button>
         </form>
-        <div id="mensaje"></div> {# ID del div de mensajes #}
+        <div id="mensaje"></div>
 
         <a href="{% url 'login_admin' %}">Administradores</a>
         <a href="{% url 'index' %}">Volver como cliente</a>

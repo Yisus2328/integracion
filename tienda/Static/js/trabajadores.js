@@ -1,13 +1,15 @@
+
 function iniciarSesionTrabajador() {
-    const trabajadorId = document.getElementById('trabajador_id').value.trim();
+    
     const trabajadorEmail = document.getElementById('trabajador_email').value.trim();
     const trabajadorPassword = document.getElementById('trabajador_password').value.trim();
-    const mensajeDiv = document.getElementById('mensaje'); // Mantener el mismo ID para el div de mensajes
+    const mensajeDiv = document.getElementById('mensaje');
 
     mensajeDiv.textContent = ''; // Limpiar mensajes anteriores
 
-    if (!trabajadorId || !trabajadorEmail || !trabajadorPassword) {
-        mensajeDiv.textContent = 'Por favor, ingresa tu ID, email y contraseña.';
+    // Validación: Solo email y contraseña son requeridos
+    if (!trabajadorEmail || !trabajadorPassword) {
+        mensajeDiv.textContent = 'Por favor, ingresa tu email y contraseña.';
         mensajeDiv.style.color = 'red';
         return;
     }
@@ -20,23 +22,16 @@ function iniciarSesionTrabajador() {
         return;
     }
 
-    // Validación de prefijo de ID (se mantiene del código anterior)
-    const idPrefix = trabajadorId.substring(0, 2).toUpperCase(); 
-    if (idPrefix !== 'BO' && idPrefix !== 'CO' && idPrefix !== 'VE') {
-        mensajeDiv.textContent = 'El ID de trabajador debe comenzar con BO (Bodeguero), CO (Contador) o VE (Vendedor).';
-        mensajeDiv.style.color = 'red';
-        return;
-    }
 
     const data = {
-        id: trabajadorId,          // Renombrado a 'id' para consistencia con admin
-        email: trabajadorEmail,    // Nuevo campo
-        contraseña: trabajadorPassword // Nuevo campo
+        // Ya no enviamos 'id' en el body de la petición
+        email: trabajadorEmail,
+        contraseña: trabajadorPassword
     };
 
     const apiUrl = 'http://localhost:3301/login/trabajadores';
 
-    fetch(apiUrl, { 
+    fetch(apiUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -61,10 +56,9 @@ function iniciarSesionTrabajador() {
                     window.location.href = data.redirect_url;
                 } else {
                     // Fallback por si la API no envía redirect_url
-                    // En este caso, el servidor Node.js debería enviar una URL específica
-                    window.location.href = '/index/'; 
+                    window.location.href = '/index/'; // O a una página por defecto de trabajador
                 }
-            }, 3000); // 3000 milisegundos = 3 segundos
+            }, 3000);
         } else {
             mensajeDiv.textContent = data.message || 'Error: Credenciales de trabajador incorrectas.';
             mensajeDiv.style.color = 'red';

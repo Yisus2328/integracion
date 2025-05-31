@@ -71,24 +71,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         row.insertCell(4).textContent = pedido.direccion_entrega;
                         row.insertCell(5).textContent = (pedido.total !== undefined && pedido.total !== null)
     ? `$${Number(pedido.total).toFixed(2)}`
-    : 'N/A'; // Columna del total con formato USD
-                        // ELIMINADO: Columna del Comprobante (originalmente row.insertCell(5))
-                        // const comprobanteCell = row.insertCell(5);
-                        // if (pedido.comprobante_url) {
-                        //     const img = document.createElement('img');
-                        //     img.src = pedido.comprobante_url;
-                        //     img.alt = 'Comprobante';
-                        //     img.className = 'comprobante-preview';
-                        //     const link = document.createElement('a');
-                        //     link.href = pedido.comprobante_url;
-                        //     link.target = '_blank';
-                        //     link.appendChild(img);
-                        //     comprobanteCell.appendChild(link);
-                        // } else {
-                        //     comprobanteCell.textContent = 'Sin comprobante';
-                        // }
-                        
-                        // Columna de Acciones (ahora será row.insertCell(5) en lugar de row.insertCell(6))
+    : 'N/A'; 
+
                         const accionesCell = row.insertCell(6); // EL ÍNDICE HA CAMBIADO
                         if (pedido.estado === 'Rechazado') {
                             const resubirButton = document.createElement('button');

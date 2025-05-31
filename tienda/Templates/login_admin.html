@@ -11,20 +11,19 @@
     <div class="form-container sign-in-container">
         <form id="adminLoginForm">
             <h1>Inicio sesión - Administradores</h1>
-            <span>Por favor, ingresa tus credenciales de administrador.</span>
+            <span>Por favor, ingresa con tus credenciales de administrador.</span>
             <p></p>
-            <input type="text" placeholder="ID de Administrador" name="admin_id" id="admin_id" required />
             <input type="email" placeholder="Email" name="admin_email" id="admin_email" required />
             <input type="password" placeholder="Contraseña" name="admin_password" id="admin_password" required />
             <p></p>
             <button type="button" onclick="iniciarSesionAdmin()">Entrar</button>
         </form>
-        <p></p>
-        <div id="adminMensaje"></div>
+        <div id="mensaje"></div>
 
-        <a href="{% url 'index' %}">Volver a la página principal</a>
+        <a href="{% url 'login_t' %}">Trabajadores</a>
+        <a href="{% url 'index' %}">Volver como cliente</a>
     </div>
 
-    <script src="{% static 'js/admin.js' %}"></script>
+    <script src="{% static 'js/admin.js' %}"></script> 
 </body>
 </html>

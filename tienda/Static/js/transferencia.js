@@ -104,8 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 fetch('/guardar_pedido/', {
                     method: 'POST',
                     headers: {
-                        // 🌟🌟🌟 MUY IMPORTANTE: NO SETTEAR 'Content-Type': 'application/json' 🌟🌟🌟
-                        // FormData lo maneja automáticamente como multipart/form-data
+
                         'X-CSRFToken': getCookie('csrftoken')
                     },
                     body: formData, // Enviar el objeto FormData

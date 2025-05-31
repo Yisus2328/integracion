@@ -1,34 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const adminId = sessionStorage.getItem('adminIdCambio');
+
     const adminEmail = sessionStorage.getItem('adminEmailCambio');
 
-    console.log('DOMContentLoaded - adminId de sessionStorage:', adminId);
     console.log('DOMContentLoaded - adminEmail de sessionStorage:', adminEmail);
 
     const mensajeDiv = document.getElementById('mensaje');
     const infoMensajeDiv = document.getElementById('infoMensaje');
 
-    if (!adminId || !adminEmail) {
-        infoMensajeDiv.textContent = 'Error: No se pudo obtener la información del administrador. Intente iniciar sesión nuevamente.';
+    // Ahora solo verificamos adminEmail
+    if (!adminEmail) {
+        infoMensajeDiv.textContent = 'Error: No se pudo obtener la información del administrador (email). Intente iniciar sesión nuevamente.';
         infoMensajeDiv.classList.add('error');
         // Redirigir al login si no hay información de admin
         setTimeout(() => {
-            // Asegúrate de que esta ruta sea la correcta para tu página de login de administrador
             window.location.href = '/login_admin'; 
-        }, 60000);
+        }, 3000); // Reduce el tiempo de espera para redirigir
         return;
     } else {
-        infoMensajeDiv.textContent = 'Por favor, ingresa una nueva contraseña para verificar tu cuenta.';
+        infoMensajeDiv.textContent = `Bienvenido, ${adminEmail}. Por favor, ingresa una nueva contraseña para verificar tu cuenta.`;
         infoMensajeDiv.classList.add('info');
     }
 });
 
 
 function cambiarContrasenaAdmin() {
-    const adminId = sessionStorage.getItem('adminIdCambio');
     const adminEmail = sessionStorage.getItem('adminEmailCambio');
 
-    console.log('cambiarContrasenaAdmin - adminId de sessionStorage:', adminId);
     console.log('cambiarContrasenaAdmin - adminEmail de sessionStorage:', adminEmail);
 
     const newPassword = document.getElementById('new_password').value.trim();
@@ -39,8 +36,8 @@ function cambiarContrasenaAdmin() {
     mensajeDiv.className = ''; // Limpiar clases de estilo
 
     // 1. Validaciones del lado del cliente
-    if (!newPassword || !confirmPassword) {
-        mensajeDiv.textContent = 'Por favor, ingresa y confirma tu nueva contraseña.';
+    if (!adminEmail || !newPassword || !confirmPassword) { // Asegurarse de que el email también esté presente
+        mensajeDiv.textContent = 'Error: Información incompleta. Recargue la página e intente nuevamente.';
         mensajeDiv.classList.add('error');
         return;
     }
@@ -57,19 +54,16 @@ function cambiarContrasenaAdmin() {
         return;
     }
 
-    // Preparar los datos para enviar a la API
+    // Preparar los datos para enviar a la API: solo email y newPassword
     const data = {
-        id: adminId,
         email: adminEmail,
         newPassword: newPassword
     };
 
     console.log('Datos enviados a la API:', data);
 
-    // URL de tu nuevo endpoint de la API
     const apiUrl = 'http://localhost:3301/admin/cambiar-contrasena'; 
 
-    // Realizar la solicitud Fetch
     fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -90,14 +84,13 @@ function cambiarContrasenaAdmin() {
             mensajeDiv.textContent = data.message || 'Contraseña cambiada y cuenta verificada exitosamente.';
             mensajeDiv.classList.add('success');
             
-            // Limpiar sessionStorage después de un cambio exitoso
-            sessionStorage.removeItem('adminIdCambio');
-            sessionStorage.removeItem('adminEmailCambio');
+
+            sessionStorage.removeItem('adminEmailCambio'); 
 
             // Redirigir al panel de administrador después del éxito
             setTimeout(() => {
-                window.location.href = '/panel_ad/'; // Redirige al dashboard de admin
-            }, 3000); // 3 segundos para que el usuario vea el mensaje
+                window.location.href = '/panel_ad/';
+            }, 3000);
         } else {
             mensajeDiv.textContent = data.message || 'Error al cambiar la contraseña.';
             mensajeDiv.classList.add('error');

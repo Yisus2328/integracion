@@ -212,8 +212,6 @@ async function eliminarProducto() {
 
         if (response.ok) {
             document.getElementById('eliminarProductoForm').reset();
-            // Aquí podrías recargar la lista de productos para que se refleje la eliminación
-            // Por ejemplo: cargarProductos(); (si tienes una función para listar)
         } else {
             console.error('Error al eliminar producto:', result.detail || response.statusText);
         }

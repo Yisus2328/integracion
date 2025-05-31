@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const botonesMarcarEnviado = document.querySelectorAll('.btn-marcar-enviado');
 
-    // Obtener el token CSRF del DOM (asumiendo que {% csrf_token %} está en el HTML)
     const csrfTokenElement = document.querySelector('input[name="csrfmiddlewaretoken"]');
     const csrfToken = csrfTokenElement ? csrfTokenElement.value : '';
 

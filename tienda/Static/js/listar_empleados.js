@@ -172,7 +172,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const confirmation = confirm(`¿Estás seguro de que quieres eliminar al ${empleado.tipo} "${empleado.nombre}" (ID: ${empleado.id})? Esta acción es irreversible.`);
 
         if (confirmation) {
-            // CAMBIO AQUÍ: Usar empleado.tipo en lugar de empleado.type
             deleteEmployee(empleado.tipo, empleado.id, empleado.nombre);
         }
     }
@@ -185,8 +184,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Si usas CSRF en Django para DELETE (recomendado), necesitarías obtener el token y añadirlo aquí:
-                    // 'X-CSRFToken': getCookie('csrftoken'),
                 },
             });
 
