@@ -1,5 +1,4 @@
- 
-        /* Reset y estilos base */
+/* Reset y estilos base */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -357,6 +356,48 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
+        }
+
+        /* Botón eliminar */
+        .btn-eliminar {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-left: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-eliminar:hover {
+            background-color: #c0392b;
+        }
+
+        /* Botones aumentar/disminuir cantidad */
+        .btn-aumentar,
+        .btn-disminuir {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin: 0 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-aumentar:hover,
+        .btn-disminuir:hover {
+            background-color: #217dbb;
         }
 
         /* Footer */

@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const metodoPago = document.getElementById('metodo-pago');
     const btnTransferencia = document.getElementById('btn-transferencia');
     const comprarBtnContainer = document.getElementById('comprar-btn-container');
+    // const carritoItemsContainer = document.getElementById('carrito-items');
+    // const contadorCarrito = document.getElementById('contador-carrito');
 
     function actualizarMetodoPago() {
         if (metodoPago.value === 'paypal') {
@@ -32,9 +34,29 @@ document.addEventListener('DOMContentLoaded', function () {
         return cookieValue;
     }
 
+
     // Modal transferencia con formulario para subir comprobante y generar pedido
     if (btnTransferencia) {
         btnTransferencia.addEventListener('click', function () {
+            // Validar método de envío seleccionado
+            const metodoEnvio = document.getElementById('metodo-envio').value;
+            if (!metodoEnvio) {
+                // Mostrar mensaje de error si no se seleccionó método de envío
+                if (!document.getElementById('error-envio-transferencia')) {
+                    const error = document.createElement('div');
+                    error.id = 'error-envio-transferencia';
+                    error.style.color = 'red';
+                    error.style.margin = '10px 0';
+                    error.textContent = 'Debes seleccionar un método de envío antes de continuar.';
+                    btnTransferencia.parentNode.insertBefore(error, btnTransferencia.nextSibling);
+                }
+                return;
+            } else {
+                // Eliminar mensaje de error si existe
+                const error = document.getElementById('error-envio-transferencia');
+                if (error) error.remove();
+            }
+
             const datos = `
                 <div id="modal-transferencia" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:3000;display:flex;align-items:center;justify-content:center;">
                     <div style="background:#fff;padding:30px 20px;border-radius:8px;max-width:400px;width:90%;position:relative;">
@@ -85,7 +107,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Generar un id de pedido temporal
                 const pedidoId = 'TRF-' + Date.now();
 
-                // 🌟🌟🌟 CAMBIO CLAVE AQUÍ: Usar FormData para enviar el archivo y los datos 🌟🌟🌟
                 const formData = new FormData();
                 formData.append('pedido_id', pedidoId);
                 formData.append('productos_json', JSON.stringify(carrito)); // Enviar productos como JSON string
@@ -99,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (direccionEntregaInput && metodoEnvio === 'estandar') {
                     formData.append('direccion_entrega', direccionEntregaInput.value);
                 }
-                // 🌟🌟🌟 FIN CAMBIO CLAVE 🌟🌟🌟
+
 
                 fetch('/guardar_pedido/', {
                     method: 'POST',
@@ -113,11 +134,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     if (data.status === 'ok') {
                         mensaje.innerHTML = '<span style="color:green;">¡Comprobante enviado! Nos comunicaremos contigo tras verificar el pago.</span>';
-                        localStorage.removeItem('carrito');
-                        setTimeout(() => {
-                            document.getElementById('modal-transferencia').remove();
-                            mostrarModalConfirmacionTransferencia(pedidoId, totalConEnvioUsd, carrito, metodoEnvio, costoEnvio);
-                        }, 1500);
+
+                        // Cerrar el modal del carrito si existe
+                        const carritoModal = document.getElementById('carrito-modal');
+                        if (carritoModal) carritoModal.style.display = 'none';
+
+                        // Mostrar el modal de éxito
+                        mostrarModalConfirmacionTransferencia(pedidoId, totalConEnvioUsd, carrito, metodoEnvio, costoEnvio);
+
+                        // Cerrar el modal de transferencia
+                        document.getElementById('modal-transferencia')?.remove();
+
+                        // Vaciar el carrito en memoria y localStorage
+                        if (window.carrito && Array.isArray(window.carrito)) {
+                            window.carrito.length = 0;
+                            localStorage.removeItem('carrito');
+                            console.log('window.carrito después de pagar:', window.carrito);
+                        }
+                        // Si tienes una variable local carrito:
+                        if (Array.isArray(carrito)) {
+                            carrito.length = 0;
+                            localStorage.setItem('carrito', JSON.stringify(carrito));
+                            console.log('carrito después de pagar:', carrito);
+                        }
+                        // Actualiza la interfaz si existe la función
+                        if (typeof actualizarCarrito === 'function') {
+                            actualizarCarrito();
+                        }
+                        const contadorCarrito = document.getElementById('contador-carrito');
+                        if (contadorCarrito) contadorCarrito.textContent = '0';
                     } else {
                         mensaje.innerHTML = '<span style="color:red;">Error al guardar el pedido: ' + (data.errores ? data.errores.join(', ') : 'Error desconocido') + '</span>';
                     }
@@ -208,4 +253,23 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         document.body.insertAdjacentHTML('beforeend', modalHTML);
     }
+
+    
+    
+
+    // Reiniciar descuento si existe la variable global
+    if (typeof descuento !== 'undefined') {
+        descuento = 0;
+    }
+    if (typeof actualizarTotalesConEnvio === 'function') {
+        actualizarTotalesConEnvio();
+    }
+
+    const contadorCarrito = document.getElementById('contador-carrito');
+    if (contadorCarrito) contadorCarrito.textContent = '0';
+
+    // Cerrar el modal del carrito si existe
+    const carritoModal = document.getElementById('carrito-modal');
+    if (carritoModal) carritoModal.style.display = 'none';
+  
 });

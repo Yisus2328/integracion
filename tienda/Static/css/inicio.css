@@ -1,5 +1,4 @@
-     
-        /* Reset y estilos base */
+/* Reset y estilos base */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -526,4 +525,69 @@
 
 .logout-btn:hover {
     background-color: #c82333;
+}
+
+/* Botón eliminar */
+.btn-eliminar {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;      /* Esquinas levemente redondeadas, NO círculo */
+    width: 38px;
+    height: 32px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(231,76,60,0.08);
+}
+.btn-eliminar:hover {
+    background-color: #c0392b;
+    transform: scale(1.08);
+}
+
+/* Botones aumentar/disminuir cantidad */
+.btn-aumentar,
+.btn-disminuir {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 6px;      /* Esquinas levemente redondeadas, NO círculo */
+    width: 34px;
+    height: 28px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    margin: 0 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(52,152,219,0.08);
+}
+.btn-aumentar:hover,
+.btn-disminuir:hover {
+    background-color: #217dbb;
+    transform: scale(1.08);
+}
+
+/* Estilo para el input de cantidad en el carrito */
+.cantidad-carrito-input {
+    width: 45px;
+    height: 28px;
+    text-align: center;
+    font-size: 1.1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin: 0 5px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 3px rgba(52,152,219,0.07);
+}
+
+.cantidad-carrito-input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52,152,219,0.15);
 }

@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 costoEnvio = 0.00;
                 break;
             default:
-                costoEnvio = 0;
+                costoEnvio = "";
         }
         actualizarTotalesConEnvio();
         renderizarBotonPaypal();
@@ -59,10 +59,13 @@ document.addEventListener('DOMContentLoaded', function () {
     actualizarTotalesConEnvio();
 
     function abrirCarrito() {
+        // Siempre recarga el carrito desde localStorage antes de mostrarlo
+        carrito = JSON.parse(localStorage.getItem('carrito')) || [];
         carritoModal.style.display = 'block';
         if (carrito.length > 0) {
             renderizarBotonPaypal();
         }
+        actualizarCarrito();
     }
 
     function cerrarCarrito() {
@@ -104,17 +107,75 @@ document.addEventListener('DOMContentLoaded', function () {
                         <img src="${item.imagen}" alt="${item.nombre}" />
                         <div>
                             <h4>${item.nombre}</h4>
-                            <p>USD ${item.precioUsd.toFixed(2)} x ${item.cantidad}</p>
+                            <p>
+                                USD ${item.precioUsd.toFixed(2)} 
+                                <button class="btn-disminuir" data-index="${index}" style="margin:0 5px;">−</button>
+                                <input type="number" min="1" class="cantidad-carrito-input" data-index="${index}" value="${item.cantidad}" style="width:45px;text-align:center;">
+                                <button class="btn-aumentar" data-index="${index}" style="margin:0 5px;">+</button>
+                                <button class="btn-borrar" data-index="${index}" style="margin-left:10px;color:#fff;background:#dc3545;border:none;padding:2px 8px;border-radius:3px;cursor:pointer;">🗑</button>
+                            </p>
                             <p>Subtotal: USD ${(item.precioUsd * item.cantidad).toFixed(2)}</p>
-                            <button class="btn-eliminar" data-index="${index}">Eliminar</button>
+                        
                         </div>
                     </div>
                 `;
                 carritoItemsContainer.innerHTML += itemHTML;
             });
+
+            // Botón eliminar
             document.querySelectorAll('.btn-eliminar').forEach(btn => {
                 btn.addEventListener('click', function () {
                     eliminarDelCarrito(parseInt(this.getAttribute('data-index')));
+                });
+            });
+
+            // Botón aumentar cantidad
+            document.querySelectorAll('.btn-aumentar').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    carrito[idx].cantidad++;
+                    actualizarCarrito();
+                    actualizarTotalesConEnvio();
+                    renderizarBotonPaypal();
+                });
+            });
+
+            // Botón disminuir cantidad
+            document.querySelectorAll('.btn-disminuir').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    if (carrito[idx].cantidad > 1) {
+                        carrito[idx].cantidad--;
+                    } else {
+                        // Si la cantidad es 1 y se presiona disminuir, elimina el producto
+                        carrito.splice(idx, 1);
+                    }
+                    actualizarCarrito();
+                    actualizarTotalesConEnvio();
+                    renderizarBotonPaypal();
+                });
+            });
+
+            // Botón borrar producto (dejar cantidad en 0 y quitar del carrito)
+            document.querySelectorAll('.btn-borrar').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    carrito.splice(idx, 1); // Elimina el producto del carrito
+                    actualizarCarrito();
+                    actualizarTotalesConEnvio();
+                    renderizarBotonPaypal();
+                });
+            });
+
+            document.querySelectorAll('.cantidad-carrito-input').forEach(input => {
+                input.addEventListener('change', function () {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    let nuevaCantidad = parseInt(this.value);
+                    if (isNaN(nuevaCantidad) || nuevaCantidad < 1) nuevaCantidad = 1;
+                    carrito[idx].cantidad = nuevaCantidad;
+                    actualizarCarrito();
+                    actualizarTotalesConEnvio();
+                    renderizarBotonPaypal();
                 });
             });
         }
@@ -139,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function vaciarCarrito() {
         carrito = [];
+        localStorage.removeItem('carrito');
         actualizarCarrito();
         actualizarTotalesConEnvio();
         comprarBtnContainer.innerHTML = '';
@@ -178,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
             descuentoElement.style.color = '#28a745';
             totalUsdElement.parentElement.parentElement.insertBefore(descuentoElement, totalUsdElement.parentElement.nextSibling);
         }
-        if (descuento > 0) {
+        if (descuento > 0 && cantidadArticulos > 4) {
             descuentoElement.textContent = `¡Descuento aplicado: -$${descuento.toFixed(2)} USD!`;
             descuentoElement.style.display = 'block';
         } else {
@@ -201,7 +263,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const totalConEnvioUsd = totalUsd + costoEnvio;
 
-        if (totalConEnvioUsd > 0 && typeof paypal !== "undefined" && paypal.Buttons) {
+        // Validar que el método de envío esté seleccionado
+        if (
+            totalConEnvioUsd > 0 &&
+            typeof paypal !== "undefined" &&
+            paypal.Buttons &&
+            metodoEnvioSelect.value !== "" // Asegúrate que el value por defecto sea ""
+        ) {
             paypal.Buttons({
                 createOrder: function(_, actions) {
                     let totalActual = carrito.reduce((acc, item) => acc + item.precioUsd * item.cantidad, 0);
@@ -248,6 +316,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 }
             }).render('#paypal-button-container');
+        } else if (totalConEnvioUsd > 0) {
+            // Mostrar mensaje para seleccionar método de envío
+            btnDiv.innerHTML = '<p style="color:red;">Debes seleccionar un método de envío para continuar.</p>';
         }
     }
 
