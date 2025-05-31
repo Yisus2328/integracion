@@ -25,18 +25,11 @@ urllib3==2.4.0
 #CORREO DE PAYPAL
 #sb-gvnhv42616555@personal.example.com
 
-##<a href="{% url 'panel_administrador' %}" class="btn-trabajadores">Volver al panel</a>
-.btn-trabajadores {
-    display: inline-block;
-    padding: 12px 25px;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.btn-trabajadores:hover {
-    background-color: #0056b3;
-}
+##Base de datos
+#INSERT INTO sucursal (id_sucursal, nombre, direccion, telefono) values ("SUC001", "Casa matriz", "calle 2", "971534603");
+#INSERT INTO sucursal (id_sucursal, nombre, direccion, telefono) values ("SUC002", "Casa matriz 2", "calle 3", "933534603");
+#INSERT INTO administrador (nombre, email, id_sucursal, contraseña, estado,id_admin, rut) VALUES ("JESUS", "administrador@gmail.com", "SUC001" ,"je1234","No_verificado","AD001","21.846.752-0");
+#INSERT INTO administrador (nombre, email, id_sucursal, contraseña, estado,id_admin, rut) VALUES ("JESUS", "administrador2@gmail.com", "SUC001" ,"je1234","No_verificado","AD002","21.846.752-2");
+#insert into bodeguero (id_bodeguero,rut,nombre,email,contraseña,id_sucursal) VALUES ("BO001", "11.111.111-1", "bodeguero 1","bodeguero@gmail.com","1234", "SUC001");
+#insert into vendedor (id_vendedor,rut,nombre,email,contraseña,id_sucursal) VALUES ("VE001", "22.111.111-1", "Vendedor 1","vendedor@gmail.com","1234", "SUC001");
+#insert into contador (id_contador,rut,nombre,email,contraseña,id_sucursal) VALUES ("CO001", "33.111.111-1", "contador 1","contador@gmail.com","1234", "SUC001");
